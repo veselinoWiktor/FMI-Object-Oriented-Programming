@@ -30,3 +30,22 @@
 *.exe
 *.out
 *.app
+
+# Useless files
+StructLayoutSettings.json
+*.sln
+/x64/
+*.tlog
+*.log
+*.pdb
+*.vcxproj*
+*.vsidx
+*.suo
+*.ipch
+*.ilk
+*.idb
+DocumentLayout.json
+*.obj.enc
+*.exe.recipe
+*.db
+HierarchyCache.v1.txt

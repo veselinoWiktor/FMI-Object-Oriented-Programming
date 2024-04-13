@@ -1,5 +1,6 @@
 #include "MultiSet.h"
 #include <iostream>
+#include <fstream>
 
 void MultiSet::copyFrom(const MultiSet& other)
 {
@@ -225,6 +226,40 @@ void MultiSet::printMemory() const
 	{
 		printBucket(i);
 	}
+}
+
+void MultiSet::serailize(const char* filename) const
+{
+	if (!filename)
+	{
+		return; //TODO implement error handling
+	}
+
+	std::ofstream ofs(filename, std::ios::binary);
+	if (!ofs.is_open())
+	{
+		return; //TODO implement error handling
+	}
+
+	ofs.write((const char*)data, bucketsCount);
+	ofs.close();
+}
+
+void MultiSet::deserialize(const char* filename)
+{
+	if (!filename)
+	{
+		return; //TODO implement error handling
+	}
+
+	std::ifstream ifs(filename, std::ios::binary);
+	if (!ifs.is_open())
+	{
+		return; //TODO implement error handling
+	}
+
+	ifs.read((char*)data, bucketsCount);//TODO might need revisit
+	ifs.close();
 }
 
 unsigned powerOfTwo(unsigned n)

@@ -33,8 +33,8 @@ public:
 	unsigned containsCount(unsigned num) const;
 	void print() const;
 	void printMemory() const;
-	void serailize();
-	void deserialize();
+	void serailize(const char* filename) const;
+	void deserialize(const char* filename);
 };
 
 unsigned powerOfTwo(unsigned n);

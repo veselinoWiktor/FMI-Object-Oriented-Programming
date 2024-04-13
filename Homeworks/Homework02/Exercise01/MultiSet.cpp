@@ -226,6 +226,7 @@ void MultiSet::printMemory() const
 	{
 		printBucket(i);
 	}
+	std::cout << std::endl;
 }
 
 void MultiSet::serailize(const char* filename) const
@@ -241,6 +242,7 @@ void MultiSet::serailize(const char* filename) const
 		return; //TODO implement error handling
 	}
 
+	//might need revisit
 	ofs.write((const char*)data, bucketsCount);
 	ofs.close();
 }
@@ -261,6 +263,26 @@ void MultiSet::deserialize(const char* filename)
 	ifs.read((char*)data, bucketsCount);//TODO might need revisit
 	ifs.close();
 }
+
+MultiSet MultiSet::Complement() const
+{
+	MultiSet complement = *this;
+	for (size_t i = 0; i < bucketsCount; i++)
+	{
+		complement.data[i] = ~data[i];
+	}
+
+	return complement;
+}
+
+//MultiSet Intersect(const MultiSet& lhs, const MultiSet& rhs)
+//{
+//	size_t intersectMaxNumber = (lhs.maxNumber < rhs.maxNumber) ? lhs.maxNumber : rhs.maxNumber;
+//	//size_t intersectMaxBucketCount = (lhs.maxNumber < rhs.maxNumber) ? lhs.bucketsCount : rhs.bucketsCount;
+//	size_t intersectNumberBits = (lhs.numberBits < rhs.numberBits) ? lhs.numberBits : rhs.numberBits;
+//
+//	MultiSet intersection(intersectMaxNumber, intersectNumberBits);
+//}
 
 unsigned powerOfTwo(unsigned n)
 {

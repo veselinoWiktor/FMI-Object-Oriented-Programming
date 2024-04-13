@@ -10,7 +10,9 @@ int main()
 	ms.addNumber(3);
 	ms.addNumber(4);
 	ms.addNumber(15);
+	MultiSet cms = ms.Complement();
 	std::cout << ms.containsCount(5) << std::endl;
 	ms.print();
 	ms.printMemory();
+	cms.printMemory();
 }

@@ -35,6 +35,11 @@ public:
 	void printMemory() const;
 	void serailize(const char* filename) const;
 	void deserialize(const char* filename);
+
+	//friend MultiSet Union(const MultiSet& lhs, const MultiSet& rhs);
+	friend MultiSet Intersect(const MultiSet& lhs, const MultiSet& rhs);
+	friend MultiSet Differnce(const MultiSet& lhs, const MultiSet& rhs);
+	MultiSet Complement() const;
 };
 
 unsigned powerOfTwo(unsigned n);

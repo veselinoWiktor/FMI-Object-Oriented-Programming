@@ -20,6 +20,16 @@ void MultiSet::free()
     bucketsCount = numberBits = maxNumber = 0;
 }
 
+size_t MultiSet::getBucket(unsigned n) const
+{
+    return (n * numberBits) / 8;
+}
+
+size_t MultiSet::getPosition(unsigned n) const
+{
+    return (n * numberBits) % 8;
+}
+
 size_t MultiSet::bucketsNeeded(size_t n) const
 {
     size_t result = ((maxNumber + 1) * numberBits) / 8;

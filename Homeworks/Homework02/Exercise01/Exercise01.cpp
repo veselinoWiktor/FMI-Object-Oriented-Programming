@@ -1,6 +1,8 @@
 #include <iostream>
+#include "MultiSet.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	MultiSet ms(20, 3);
+	std::cout << ms.containsCount(5) << std::endl;
 }

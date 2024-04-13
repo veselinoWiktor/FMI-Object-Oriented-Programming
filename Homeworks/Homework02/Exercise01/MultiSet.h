@@ -12,9 +12,10 @@ private:
 	void copyFrom(const MultiSet& other);
 	void free();
 
-	size_t getBucket(unsigned n) const;
-	size_t getPosition(unsigned n) const;
-	size_t bucketsNeeded(size_t n) const;
+	size_t getBucket(unsigned num) const;
+	size_t getPosition(unsigned num) const;
+	size_t bucketsNeeded(size_t num) const;
+	char getMask(unsigned position) const;
 
 	void setMaxNumber(size_t _maxNumber);
 	void setNumberBits(size_t _numberBits);
@@ -26,9 +27,11 @@ public:
 	MultiSet& operator=(const MultiSet& other);
 	~MultiSet();
 
-	void addNumber();
-	unsigned containsCount(unsigned number);
+	void addNumber(unsigned num);
+	unsigned containsCount(unsigned num);
 	void print();
 	void serailize();
 	void deserialize();
 };
+
+unsigned powerOfTwo(unsigned n);

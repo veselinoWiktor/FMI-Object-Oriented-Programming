@@ -1,4 +1,5 @@
 #include "MultiSet.h"
+#include <iostream>
 
 void MultiSet::copyFrom(const MultiSet& other)
 {
@@ -71,6 +72,29 @@ void MultiSet::initData()
 	}
 }
 
+void MultiSet::printBucket(unsigned bucketIdx) const
+{
+	unsigned upperBound = 8;
+
+	if (bucketIdx == bucketsCount - 1)
+	{
+		unsigned lastNumEndPos = getPosition(maxNumber + 1);
+		upperBound = lastNumEndPos == 0 ? upperBound : lastNumEndPos;
+		//think of a way to fix it
+	}
+
+	bool bitVal = 0;
+	for (size_t i = 0; i < upperBound; i++)
+	{
+		bitVal = data[bucketIdx] & getMask(i);
+
+		if (bitVal)
+			std::cout << "1";
+		else
+			std::cout << "0";
+	}
+}
+
 MultiSet::MultiSet(size_t n, size_t k)
 {
 	setNumberBits(k);
@@ -115,39 +139,9 @@ void MultiSet::addNumber(unsigned num)
 	int numPosition = getPosition(num);
 
 	int numBitsToRead = numberBits;
-	//int dataNum = 0;
-
-	//if ((numPosition + numBitsToRead) > 8)
-	//{
-	//	dataNum += data[numBucket] & getMask(num, numPosition);
-
-	//	numBitsToRead = (numPosition + numBitsToRead) - 8;
-	//	dataNum <<= numBitsToRead;
-	//	numPosition = 0;
-	//	numBucket++;
-	//	inTwoBuckets = true;
-	//}
-
-	//dataNum += data[numBucket] & getMask(num, numPosition, numBitsToRead);
-
-	////check for dataNum == 2^k - 1;
-	//if (dataNum == (powerOfTwo(numberBits) - 1))
-	//{
-	//	return; //TODO exception handling
-	//}
-	//else
-	//{
-	//	dataNum++;
-	//}
-
-	//if (inTwoBuckets)
-	//{
-	//	
-	//}
 
 	if ((numPosition + numBitsToRead) > 8)
 	{
-		//go to the end of num
 		numPosition = ((numPosition + numBitsToRead) - 8) - 1;
 		numBucket++;
 	}
@@ -158,21 +152,18 @@ void MultiSet::addNumber(unsigned num)
 
 	for (size_t i = 0; i < numBitsToRead; i++)
 	{
-		//check num at position in bucket
 		char mask = getMask(numPosition);
 		bool bitVal = data[numBucket] & mask;
 
-		//if 0 make it 1 and break cycle because we incremented it by one;
 		if (!bitVal)
 		{
 			data[numBucket] |= mask;
 			break;
 		}
-		else //if 1 go to next iteration and make it zero
+		else
 		{
 			data[numBucket] &= ~mask;
 			if (numPosition == 0) {
-				//if position goes to zero and still have iterations, go to previous bucket and increment by one
 				numPosition = 7;
 				numBucket--;
 			}
@@ -184,7 +175,7 @@ void MultiSet::addNumber(unsigned num)
 	}
 }
 
-unsigned MultiSet::containsCount(unsigned num)
+unsigned MultiSet::containsCount(unsigned num) const
 {
 	if (num > maxNumber)
 	{
@@ -217,6 +208,23 @@ unsigned MultiSet::containsCount(unsigned num)
 	}
 
 	return numCount >> 1;
+}
+
+void MultiSet::print() const
+{
+	for (size_t i = 0; i <= maxNumber; i++)
+	{
+		int currentNumCount = containsCount(i);
+		std::cout << i << " is contained:" << currentNumCount << " times." << std::endl;
+	}
+}
+
+void MultiSet::printMemory() const
+{
+	for (size_t i = 0; i < bucketsCount; i++)
+	{
+		printBucket(i);
+	}
 }
 
 unsigned powerOfTwo(unsigned n)

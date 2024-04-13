@@ -20,6 +20,8 @@ private:
 	void setMaxNumber(size_t _maxNumber);
 	void setNumberBits(size_t _numberBits);
 	void initData();
+
+	void printBucket(unsigned bucketIdx) const;
 public:
 	MultiSet() = default;
 	MultiSet(size_t n, size_t k);
@@ -28,8 +30,9 @@ public:
 	~MultiSet();
 
 	void addNumber(unsigned num);
-	unsigned containsCount(unsigned num);
-	void print();
+	unsigned containsCount(unsigned num) const;
+	void print() const;
+	void printMemory() const;
 	void serailize();
 	void deserialize();
 };

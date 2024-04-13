@@ -3,6 +3,14 @@
 
 int main()
 {
-	MultiSet ms(20, 3);
+	MultiSet ms(15, 3);
+	ms.addNumber(0);
+	ms.addNumber(1);
+	ms.addNumber(2);
+	ms.addNumber(3);
+	ms.addNumber(4);
+	ms.addNumber(15);
 	std::cout << ms.containsCount(5) << std::endl;
+	ms.print();
+	ms.printMemory();
 }

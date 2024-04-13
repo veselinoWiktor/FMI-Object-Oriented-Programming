@@ -49,3 +49,6 @@ DocumentLayout.json
 *.exe.recipe
 *.db
 HierarchyCache.v1.txt
+/Homeworks/Homework02/.vs/Homework02/v17/Browse.VC.db-shm
+/Homeworks/Homework02/.vs/Homework02/v17/Browse.VC.db-wal
+/Homeworks/Homework02/.vs/Homework02/v17/Browse.VC.opendb

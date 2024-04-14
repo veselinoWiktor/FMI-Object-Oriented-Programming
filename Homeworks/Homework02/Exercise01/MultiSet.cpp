@@ -229,7 +229,7 @@ void MultiSet::printMemory() const
 	std::cout << std::endl;
 }
 
-void MultiSet::serailize(const char* filename) const
+void MultiSet::serialize(const char* filename) const
 {
 	if (!filename)
 	{

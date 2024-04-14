@@ -33,7 +33,7 @@ public:
 	unsigned containsCount(unsigned num) const;
 	void print() const;
 	void printMemory() const;
-	void serailize(const char* filename) const;
+	void serialize(const char* filename) const;
 	void deserialize(const char* filename);
 
 	//friend MultiSet Union(const MultiSet& lhs, const MultiSet& rhs);

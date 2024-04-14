@@ -22,14 +22,29 @@ public:
 
 	ModifiableIntegersFunction& operator+=(const ModifiableIntegersFunction& other);
 	ModifiableIntegersFunction& operator-=(const ModifiableIntegersFunction& other);
-	//ModifiableIntegersFunction& operator+=(const ModifiableIntegersFunction& other); // think of symbol for composition
-	ModifiableIntegersFunction& operator^=(const ModifiableIntegersFunction& other);
+	ModifiableIntegersFunction& operator^(int power); // f^k - even -1, because f-1 would return inverse function
 
+	bool isInjective() const;
+	bool isSurjective() const;
+	bool isBijective() const;
+
+	void serialize(const char* filename) const;
+	void desrialize(const char* filename);
+
+	void draw() const;
 };
 
 ModifiableIntegersFunction operator+(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
 ModifiableIntegersFunction operator-(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
-//ModifiableIntegersFunction operator+(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs); //think of symbol for composition
-ModifiableIntegersFunction operator^(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+ModifiableIntegersFunction operator*(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);//composition
 
-bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+//are two functions parallel
+bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs); 
+
+bool operator==(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+bool operator!=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+bool operator<(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+bool operator<=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+bool operator>=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
+

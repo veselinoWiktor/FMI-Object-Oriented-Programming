@@ -29,3 +29,15 @@ int16_t ModifiableIntegersFunction::operator()(int16_t _x)
 {
 	return function(_x);
 }
+
+bool ModifiableIntegersFunction::isBijective() const
+{
+	if (isInjective() && isSurjective)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}

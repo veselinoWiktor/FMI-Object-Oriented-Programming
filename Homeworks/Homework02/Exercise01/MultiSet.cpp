@@ -24,19 +24,18 @@ void MultiSet::free()
 
 size_t MultiSet::getBucket(unsigned num) const
 {
-	return (num * numberBits) / 8;
+	return (num * numberBits) / MultiSetConstants::BITS_IN_BYTE;
 }
 
 size_t MultiSet::getPosition(unsigned num) const
 {
-	//(((num + 1) * numberBits) % 8) - 1;
-	return (num * numberBits) % 8;
+	return (num * numberBits) % MultiSetConstants::BITS_IN_BYTE;
 }
 
 size_t MultiSet::bucketsNeeded(size_t num) const
 {
-	size_t result = ((maxNumber + 1) * numberBits) / 8;
-	if ((maxNumber + 1) % 8 != 0)
+	size_t result = ((maxNumber + 1) * numberBits) / MultiSetConstants::BITS_IN_BYTE;
+	if ((maxNumber + 1) % MultiSetConstants::BITS_IN_BYTE != 0)
 		result++;
 
 	return result;
@@ -44,7 +43,7 @@ size_t MultiSet::bucketsNeeded(size_t num) const
 
 char MultiSet::getMask(unsigned position) const
 {
-	return 1 << (7 - position);
+	return 1 << (MultiSetConstants::LAST_BIT_INDEX - position);
 }
 
 void MultiSet::setMaxNumber(size_t _maxNumber)
@@ -54,7 +53,8 @@ void MultiSet::setMaxNumber(size_t _maxNumber)
 
 void MultiSet::setNumberBits(size_t _numberBits)
 {
-	if (1 <= _numberBits && _numberBits <= 8)
+	if (MultiSetConstants::MIN_BITS_FOR_NUMBER <= _numberBits
+		&& _numberBits <= MultiSetConstants::MAX_BITS_FOR_NUMBER)
 	{
 		numberBits = _numberBits;
 	}
@@ -73,9 +73,9 @@ void MultiSet::initData()
 	}
 }
 
-void MultiSet::printBucket(unsigned bucketIdx) const
+void MultiSet::printBucketMemory(unsigned bucketIdx) const
 {
-	unsigned upperBound = 8;
+	unsigned upperBound = MultiSetConstants::BITS_IN_BYTE;
 
 	if (bucketIdx == bucketsCount - 1)
 	{
@@ -128,22 +128,20 @@ void MultiSet::addNumber(unsigned num)
 {
 	if (num > maxNumber)
 	{
-		return; //TODO add exception handling maybe?
+		throw std::out_of_range("Num is above the range of the set");
 	}
 
 	if (containsCount(num) == powerOfTwo(numberBits) - 1)
 	{
-		return; //TODO add better return message
+		throw std::logic_error("Num already have max value");
 	}
 
 	int numBucket = getBucket(num);
 	int numPosition = getPosition(num);
 
-	int numBitsToRead = numberBits;
-
-	if ((numPosition + numBitsToRead) > 8)
+	if ((numPosition + numberBits) > MultiSetConstants::BITS_IN_BYTE)
 	{
-		numPosition = ((numPosition + numBitsToRead) - 8) - 1;
+		numPosition = ((numPosition + numberBits) - MultiSetConstants::BITS_IN_BYTE) - 1;
 		numBucket++;
 	}
 	else
@@ -151,7 +149,7 @@ void MultiSet::addNumber(unsigned num)
 		numPosition += (numberBits - 1);
 	}
 
-	for (size_t i = 0; i < numBitsToRead; i++)
+	for (size_t i = 0; i < numberBits; i++)
 	{
 		char mask = getMask(numPosition);
 		bool bitVal = data[numBucket] & mask;
@@ -164,8 +162,8 @@ void MultiSet::addNumber(unsigned num)
 		else
 		{
 			data[numBucket] &= ~mask;
-			if (numPosition == 0) {
-				numPosition = 7;
+			if (numPosition == MultiSetConstants::FIRST_BIT_INDEX) {
+				numPosition = MultiSetConstants::LAST_BIT_INDEX;
 				numBucket--;
 			}
 			else
@@ -180,16 +178,14 @@ unsigned MultiSet::containsCount(unsigned num) const
 {
 	if (num > maxNumber)
 	{
-		return 0; //TODO add exception handling maybe?
+		throw std::out_of_range("Num is above the range of the set");
 	}
 
 	int numBucket = getBucket(num);
 	int numPosition = getPosition(num);
 
-	int numBitsToRead = numberBits;
 	int numCount = 0;
-
-	for (size_t i = 0; i < numBitsToRead; i++)
+	for (size_t i = 0; i < numberBits; i++)
 	{
 		char mask = getMask(numPosition);
 		bool bitVal = data[numBucket] & mask;
@@ -197,9 +193,9 @@ unsigned MultiSet::containsCount(unsigned num) const
 		numCount |= bitVal;
 		numCount <<= 1;
 
-		if (numPosition == 7)
+		if (numPosition == MultiSetConstants::LAST_BIT_INDEX)
 		{
-			numPosition = 0;
+			numPosition = MultiSetConstants::FIRST_BIT_INDEX;
 			numBucket++;
 		}
 		else
@@ -213,10 +209,14 @@ unsigned MultiSet::containsCount(unsigned num) const
 
 void MultiSet::print() const
 {
+	unsigned currNumCount = 0;
 	for (size_t i = 0; i <= maxNumber; i++)
 	{
-		int currentNumCount = containsCount(i);
-		std::cout << i << " is contained:" << currentNumCount << " times." << std::endl;
+		currNumCount = containsCount(i);
+		if (currNumCount > 0)
+		{
+			std::cout << i << " is contained: " << currNumCount << "times." << std::endl;
+		}
 	}
 }
 
@@ -224,7 +224,7 @@ void MultiSet::printMemory() const
 {
 	for (size_t i = 0; i < bucketsCount; i++)
 	{
-		printBucket(i);
+		printBucketMemory(i);
 	}
 	std::cout << std::endl;
 }
@@ -233,16 +233,17 @@ void MultiSet::serialize(const char* filename) const
 {
 	if (!filename)
 	{
-		return; //TODO implement error handling
+		throw std::invalid_argument("Filename was nullptr");
 	}
 
 	std::ofstream ofs(filename, std::ios::binary);
 	if (!ofs.is_open())
 	{
-		return; //TODO implement error handling
+		throw std::runtime_error("Stream is already opened!");
 	}
 
-	//might need revisit
+	ofs.write((const char*)&maxNumber, sizeof(size_t));
+	ofs.write((const char*)&numberBits, sizeof(size_t));
 	ofs.write((const char*)data, bucketsCount);
 	ofs.close();
 }
@@ -251,16 +252,24 @@ void MultiSet::deserialize(const char* filename)
 {
 	if (!filename)
 	{
-		return; //TODO implement error handling
+		throw std::invalid_argument("Filename was nullptr");
 	}
 
 	std::ifstream ifs(filename, std::ios::binary);
 	if (!ifs.is_open())
 	{
-		return; //TODO implement error handling
+		throw std::runtime_error("Stream is already opened!");
 	}
 
-	ifs.read((char*)data, bucketsCount);//TODO might need revisit
+	ifs.read((char*)&maxNumber, sizeof(size_t));
+	ifs.read((char*)&numberBits, sizeof(size_t));
+
+	unsigned fileSize = getFileSize(ifs);
+	bucketsCount = fileSize - (2 * sizeof(size_t));
+
+	delete[] data;
+	data = new char[bucketsCount];
+	ifs.read((char*)data, bucketsCount);
 	ifs.close();
 }
 
@@ -292,4 +301,14 @@ unsigned powerOfTwo(unsigned n)
 	}
 
 	return 1 << n;
+}
+
+unsigned getFileSize(std::ifstream& ifs)
+{
+	unsigned currentPos = ifs.tellg();
+	ifs.seekg(0, std::ios::end);
+	unsigned size = ifs.tellg();
+	ifs.seekg(currentPos);
+
+	return size;
 }

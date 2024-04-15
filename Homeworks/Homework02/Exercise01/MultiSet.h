@@ -1,4 +1,15 @@
 #pragma once
+#include<fstream>
+
+namespace MultiSetConstants {
+	constexpr const int FIRST_BIT_INDEX = 0;
+	constexpr const int LAST_BIT_INDEX = 7;
+
+	constexpr const int BITS_IN_BYTE = 8;
+
+	constexpr const int MIN_BITS_FOR_NUMBER = 0;
+	constexpr const int MAX_BITS_FOR_NUMBER = 8;
+}
 
 class MultiSet
 {
@@ -21,7 +32,7 @@ private:
 	void setNumberBits(size_t _numberBits);
 	void initData();
 
-	void printBucket(unsigned bucketIdx) const;
+	void printBucketMemory(unsigned bucketIdx) const;
 public:
 	MultiSet() = default;
 	MultiSet(size_t n, size_t k);
@@ -43,3 +54,4 @@ public:
 };
 
 unsigned powerOfTwo(unsigned n);
+unsigned getFileSize(std::ifstream& ifs);

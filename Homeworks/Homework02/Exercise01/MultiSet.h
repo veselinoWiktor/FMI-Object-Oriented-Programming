@@ -40,6 +40,9 @@ public:
 	MultiSet& operator=(const MultiSet& other);
 	~MultiSet();
 
+	size_t getBitsPerNumber() const;
+	size_t getMaxNumber() const;
+
 	void addNumber(unsigned num);
 	unsigned containsCount(unsigned num) const;
 	void print() const;

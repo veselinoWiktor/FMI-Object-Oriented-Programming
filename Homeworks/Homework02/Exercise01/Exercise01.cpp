@@ -12,6 +12,14 @@ int main()
 		MultiSet cms = ms.Complement();
 		cms.print();
 		cms.printMemory();
+
+		MultiSet intersection = Intersect(ms, cms);
+		intersection.print();
+		intersection.printMemory();
+
+		MultiSet difference = Differnce(cms, intersection);
+		difference.print();
+		difference.printMemory();
 	}
 	catch (const std::out_of_range& e)
 	{

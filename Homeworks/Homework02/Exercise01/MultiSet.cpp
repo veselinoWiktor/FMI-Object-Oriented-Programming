@@ -124,6 +124,16 @@ MultiSet::~MultiSet()
 	free();
 }
 
+size_t MultiSet::getBitsPerNumber() const
+{
+	return numberBits;
+}
+
+size_t MultiSet::getMaxNumber() const
+{
+	return maxNumber;
+}
+
 void MultiSet::addNumber(unsigned num)
 {
 	if (num > maxNumber)
@@ -284,14 +294,77 @@ MultiSet MultiSet::Complement() const
 	return complement;
 }
 
-//MultiSet Intersect(const MultiSet& lhs, const MultiSet& rhs)
-//{
-//	size_t intersectMaxNumber = (lhs.maxNumber < rhs.maxNumber) ? lhs.maxNumber : rhs.maxNumber;
-//	//size_t intersectMaxBucketCount = (lhs.maxNumber < rhs.maxNumber) ? lhs.bucketsCount : rhs.bucketsCount;
-//	size_t intersectNumberBits = (lhs.numberBits < rhs.numberBits) ? lhs.numberBits : rhs.numberBits;
-//
-//	MultiSet intersection(intersectMaxNumber, intersectNumberBits);
-//}
+MultiSet Intersect(const MultiSet& lhs, const MultiSet& rhs)
+{
+	size_t intersectMaxNumber = (lhs.maxNumber < rhs.maxNumber) ? lhs.maxNumber : rhs.maxNumber;
+	size_t intersectNumberBits = (lhs.numberBits < rhs.numberBits) ? lhs.numberBits : rhs.numberBits;
+
+	MultiSet intersection(intersectMaxNumber, intersectNumberBits);
+
+	unsigned intersectionMaxNumCount = powerOfTwo(intersectNumberBits) - 1;
+
+	unsigned lhsNumCount = 0;
+	unsigned rhsNumCount = 0;
+	for (size_t i = 0; i <= intersectMaxNumber; i++)
+	{
+		lhsNumCount = lhs.containsCount(i);
+		rhsNumCount = rhs.containsCount(i);
+
+		if (lhsNumCount > intersectionMaxNumCount)
+		{
+			lhsNumCount = intersectionMaxNumCount;
+		}
+		if (rhsNumCount > intersectionMaxNumCount)
+		{
+			rhsNumCount = intersectionMaxNumCount;
+		}
+
+		if (lhsNumCount < rhsNumCount)
+		{
+			for (int j = 0; j < lhsNumCount; j++)
+			{
+				intersection.addNumber(i);
+			}
+		}
+		else
+		{
+			for (int j = 0; j < rhsNumCount; j++)
+			{
+				intersection.addNumber(i);
+			}
+		}
+	}
+
+	return intersection;
+}
+
+MultiSet Differnce(const MultiSet& lhs, const MultiSet& rhs)
+{
+	size_t differenceMaxNumber = (lhs.maxNumber > rhs.maxNumber) ? lhs.maxNumber : rhs.maxNumber;
+	size_t differenceNumberBits = (lhs.numberBits > rhs.numberBits) ? lhs.numberBits : rhs.numberBits;
+
+	MultiSet difference(differenceMaxNumber, differenceNumberBits);
+
+	unsigned lhsNumCount = 0;
+	unsigned rhsNumCount = 0;
+	int numsDifference = 0;
+	for (size_t i = 0; i <= differenceMaxNumber; i++)
+	{
+		lhsNumCount = lhs.containsCount(i);
+		rhsNumCount = rhs.containsCount(i);
+
+		numsDifference = lhsNumCount - rhsNumCount;
+		numsDifference = numsDifference < 0 ? 0 : numsDifference;
+
+		for (int j = 0; j < numsDifference; j++)
+		{
+			difference.addNumber(i);
+		}
+		
+	}
+
+	return difference;
+}
 
 unsigned powerOfTwo(unsigned n)
 {

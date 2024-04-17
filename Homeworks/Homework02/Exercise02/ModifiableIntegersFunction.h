@@ -1,18 +1,30 @@
 #pragma once
 #include <iostream>
-#include "Point.h"
 
 class ModifiableIntegersFunction
 {
 private:
 	int16_t (*function)(int16_t) = nullptr;
-	Point* changedPoints = nullptr;
-	size_t capacity = 0;
-	size_t count = 0;
+	int16_t functionValues[65536];
+
+	int16_t* disabledPoints = nullptr;
+	size_t disabledCapacity = 0;
+	size_t disabledCount = 0;
+
+	void copyFrom(const ModifiableIntegersFunction& other);
+	void free();
+
+	void resize();
+
+	void initFunctionData();
+	void setFunction(int16_t (*functionPredicate)(int16_t));
 
 public:
 	ModifiableIntegersFunction() = default;
 	ModifiableIntegersFunction(int16_t (*functionPredicate)(int16_t));
+	ModifiableIntegersFunction(const ModifiableIntegersFunction& other);
+	ModifiableIntegersFunction& operator=(const ModifiableIntegersFunction& other);
+	~ModifiableIntegersFunction();
 
 	void changePoint(int16_t _x, int16_t _y);
 

@@ -1,11 +1,17 @@
 #pragma once
 #include <iostream>
 
+namespace Constants
+{
+	constexpr const int FUNCTION_VALUES_COUNT = 65536;
+	constexpr const int FUNCTION_ZERO_INDEX = 32768;
+}
+
 class ModifiableIntegersFunction
 {
 private:
 	int16_t (*function)(int16_t) = nullptr;
-	int16_t functionValues[65536];
+	int16_t functionValues[Constants::FUNCTION_VALUES_COUNT];
 
 	int16_t* disabledPoints = nullptr;
 	size_t disabledCapacity = 0;
@@ -19,6 +25,8 @@ private:
 	void initFunctionData();
 	void setFunction(int16_t (*functionPredicate)(int16_t));
 
+	bool isDisabled(int16_t _x) const;
+
 public:
 	ModifiableIntegersFunction() = default;
 	ModifiableIntegersFunction(int16_t (*functionPredicate)(int16_t));
@@ -28,7 +36,7 @@ public:
 
 	void changePoint(int16_t _x, int16_t _y);
 
-	void disablePoint(int16_t _x, int16_t _y);
+	void disablePoint(int16_t _x);
 
 	int16_t operator()(int16_t _x);
 

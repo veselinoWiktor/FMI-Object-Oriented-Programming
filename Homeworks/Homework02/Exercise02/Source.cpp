@@ -8,7 +8,7 @@ int16_t f(int16_t x)
 
 int16_t g(int16_t x)
 {
-	return 2*x;
+	return x + 5;
 }
 
 int main()
@@ -17,7 +17,7 @@ int main()
 	ModifiableIntegersFunction mig(g);
 	ModifiableIntegersFunction compos = mif * mig;
 
-
+	std::cout << mig.isInjective() << std::endl;
 	std::cout << compos(0) <<std::endl;
 	std::cout << compos(1) << std::endl;
 	std::cout << compos(2) << std::endl;

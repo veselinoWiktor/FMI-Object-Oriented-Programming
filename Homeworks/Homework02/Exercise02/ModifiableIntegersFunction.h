@@ -12,21 +12,18 @@ namespace Constants
 class ModifiableIntegersFunction
 {
 private:
-	int16_t (*function)(int16_t) = nullptr;
 	int16_t functionValues[Constants::FUNCTION_VALUES_COUNT];
 
 	int16_t* disabledPoints = nullptr;
-	size_t disabledCapacity = 0;
-	size_t disabledCount = 0;
+	int32_t disabledCapacity = 0;
+	int16_t disabledCount = 0;
 
 	void copyFrom(const ModifiableIntegersFunction& other);
 	void free();
 
 	void resize();
 
-	void initFunctionData();
-	void setFunction(int16_t (*functionPredicate)(int16_t));
-
+	void initFunctionData(int16_t(*functionPredicate)(int16_t));
 
 public:
 	ModifiableIntegersFunction();
@@ -71,3 +68,5 @@ bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFu
 bool operator>=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
 
 int16_t powerOf(int16_t base, uint16_t power);
+
+uint32_t nextPowerOfTwo(uint16_t n);

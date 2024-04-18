@@ -27,7 +27,6 @@ private:
 	void initFunctionData();
 	void setFunction(int16_t (*functionPredicate)(int16_t));
 
-	bool isDisabled(int16_t _x) const;
 
 public:
 	ModifiableIntegersFunction() = default;
@@ -39,6 +38,7 @@ public:
 	void changePoint(int16_t _x, int16_t _y);
 
 	void disablePoint(int16_t _x);
+	bool isDisabled(int16_t _x) const;
 
 	int16_t operator()(int16_t _x) const;
 

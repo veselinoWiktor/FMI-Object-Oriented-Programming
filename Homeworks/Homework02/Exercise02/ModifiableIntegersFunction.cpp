@@ -242,8 +242,23 @@ bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 
 bool operator==(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
 {
+	bool isLhsValueDisabled = false;
+	bool isRhsValueDisabled = false;
 	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
+		isLhsValueDisabled = lhs.isDisabled(i);
+		isRhsValueDisabled = rhs.isDisabled(i);
+
+		if ((isLhsValueDisabled && !isRhsValueDisabled)
+			||(!isLhsValueDisabled && isRhsValueDisabled))
+		{
+			return false;
+		}
+		else if (isLhsValueDisabled && isRhsValueDisabled)
+		{
+			continue;
+		}
+
 		if (lhs(i) != rhs(i))
 		{
 			return false;
@@ -260,8 +275,22 @@ bool operator!=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 
 bool operator<(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
 {
+	bool isLhsValueDisabled = false;
+	bool isRhsValueDisabled = false;
 	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
+		isLhsValueDisabled = lhs.isDisabled(i);
+		isRhsValueDisabled = rhs.isDisabled(i);
+
+		if (isLhsValueDisabled && isRhsValueDisabled)
+		{
+			return false;
+		}
+		else if (!isLhsValueDisabled && isRhsValueDisabled)
+		{
+			return false;
+		}
+
 		if (lhs(i) >= rhs(i))
 		{
 			return false;
@@ -278,8 +307,22 @@ bool operator<=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 
 bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
 {
+	bool isLhsValueDisabled = false;
+	bool isRhsValueDisabled = false;
 	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
+		isLhsValueDisabled = lhs.isDisabled(i);
+		isRhsValueDisabled = rhs.isDisabled(i);
+
+		if (isLhsValueDisabled && isRhsValueDisabled)
+		{
+			return false;
+		}
+		else if (isLhsValueDisabled && !isRhsValueDisabled)
+		{
+			return false;
+		}
+
 		if (lhs(i) <= rhs(i))
 		{
 			return false;

@@ -5,6 +5,8 @@ namespace Constants
 {
 	constexpr const int FUNCTION_VALUES_COUNT = 65536;
 	constexpr const int FUNCTION_ZERO_INDEX = 32768;
+	constexpr const int16_t FUNCTION_LOWER_BOUND_INDEX = -32768;
+	constexpr const int16_t FUNCTION_UPPER_BOUND_INDEX = 32767;
 }
 
 class ModifiableIntegersFunction
@@ -38,11 +40,11 @@ public:
 
 	void disablePoint(int16_t _x);
 
-	int16_t operator()(int16_t _x);
+	int16_t operator()(int16_t _x) const;
 
 	ModifiableIntegersFunction& operator+=(const ModifiableIntegersFunction& other);
 	ModifiableIntegersFunction& operator-=(const ModifiableIntegersFunction& other);
-	ModifiableIntegersFunction& operator^(int power); // f^k - even -1, because f-1 would return inverse function
+	ModifiableIntegersFunction& operator^(int16_t power); // f^k - even -1, because f-1 would return inverse function
 
 	bool isInjective() const;
 	bool isSurjective() const;
@@ -68,3 +70,4 @@ bool operator<=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
 bool operator>=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);
 
+int16_t powerOf(int16_t base, uint16_t power);

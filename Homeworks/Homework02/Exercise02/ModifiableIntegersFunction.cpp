@@ -117,7 +117,7 @@ void ModifiableIntegersFunction::disablePoint(int16_t _x)
 	disabledPoints[disabledCount++] = _x;
 }
 
-int16_t ModifiableIntegersFunction::operator()(int16_t _x)
+int16_t ModifiableIntegersFunction::operator()(int16_t _x) const
 {
 	if (isDisabled(_x))
 	{
@@ -176,3 +176,71 @@ ModifiableIntegersFunction& ModifiableIntegersFunction::operator-=(const Modifia
 
 	return *this;
 }
+
+ModifiableIntegersFunction& ModifiableIntegersFunction::operator^(int16_t power)
+{
+	if (power < 0)
+	{
+		if (power % 2 == 0) // (f^-1)^-1 = f тоест за всяка четна отрицателна степен функцията се запазва
+		{
+			return *this;
+		}
+		else
+		{
+			//reverse function
+		}
+	}
+	else if (power == 0)
+	{
+		for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
+		{
+			functionValues[i] = 1;
+		}
+	}
+	else if (power == 1)
+	{
+		return *this;
+	}
+	else {
+		for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
+		{
+			functionValues[i] = powerOf(functionValues[i], power);
+		}
+	}
+}
+
+bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	int16_t difference = lhs(Constants::FUNCTION_LOWER_BOUND_INDEX) - rhs(Constants::FUNCTION_LOWER_BOUND_INDEX);
+
+	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	{
+		if ((lhs(i) - rhs(i)) != difference)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int16_t powerOf(int16_t base, uint16_t power)
+{
+	if (power == 0)
+	{
+		return 1;
+	}
+	else if (base == 0 || base == 1)
+	{
+		return base;
+	}
+
+	int result = 1;
+	for (size_t i = 0; i < power; i++)
+	{
+		result *= base;
+	}
+
+	return result;
+}
+

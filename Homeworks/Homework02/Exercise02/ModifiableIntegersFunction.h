@@ -29,7 +29,7 @@ private:
 
 
 public:
-	ModifiableIntegersFunction() = default;
+	ModifiableIntegersFunction();
 	ModifiableIntegersFunction(int16_t (*functionPredicate)(int16_t));
 	ModifiableIntegersFunction(const ModifiableIntegersFunction& other);
 	ModifiableIntegersFunction& operator=(const ModifiableIntegersFunction& other);

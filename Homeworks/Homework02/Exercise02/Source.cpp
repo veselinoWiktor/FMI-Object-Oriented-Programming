@@ -3,7 +3,7 @@
 
 int16_t f(int16_t x)
 {
-	return 1;
+	return x * x;
 }
 
 int16_t g(int16_t x)
@@ -15,8 +15,13 @@ int main()
 {
 	ModifiableIntegersFunction mif(f);
 	ModifiableIntegersFunction mig(g);
-	std::cout << (mif || mig);
+	ModifiableIntegersFunction compos = mif * mig;
 
+
+	std::cout << compos(0) <<std::endl;
+	std::cout << compos(1) << std::endl;
+	std::cout << compos(2) << std::endl;
+	std::cout << compos(3) << std::endl;
 
 	/*std::cout << mif(0) << std::endl;
 	std::cout << mif(1) << std::endl;

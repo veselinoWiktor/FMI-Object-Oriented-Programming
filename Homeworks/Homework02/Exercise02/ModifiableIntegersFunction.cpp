@@ -75,6 +75,13 @@ bool ModifiableIntegersFunction::isDisabled(int16_t _x) const
 	return false;
 }
 
+ModifiableIntegersFunction::ModifiableIntegersFunction()
+{
+	int16_t (*defaultFunction)(int16_t) = [](int16_t x) { return (int16_t)0; };
+	setFunction(defaultFunction);
+	initFunctionData();
+}
+
 ModifiableIntegersFunction::ModifiableIntegersFunction(int16_t(*functionPredicate)(int16_t))
 {
 	setFunction(functionPredicate);
@@ -185,8 +192,14 @@ ModifiableIntegersFunction& ModifiableIntegersFunction::operator^(int16_t power)
 		{
 			return *this;
 		}
-		else
+		else // за всяка нечетна отрицателна степен функцията се обръща
 		{
+			if (!isInjective())
+			{
+				throw std::logic_error("The function is irreversible");
+			}
+
+
 			//reverse function
 		}
 	}
@@ -223,6 +236,37 @@ ModifiableIntegersFunction operator-(const ModifiableIntegersFunction& lhs, cons
 	mfsResult -= rhs;
 
 	return mfsResult;
+}
+
+//Composition operator
+ModifiableIntegersFunction operator*(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	ModifiableIntegersFunction mfsCompositionResult;
+
+	int16_t newValue = 0;
+	bool isLhsValueDisabled = false;
+	bool isRhsValueDisabled = false;
+	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	{
+		isLhsValueDisabled = lhs.isDisabled(i);
+		isRhsValueDisabled = rhs.isDisabled(i);
+
+		if (isLhsValueDisabled || isRhsValueDisabled)
+		{
+			mfsCompositionResult.disablePoint(i);
+			continue;
+		}
+
+		newValue = lhs(rhs(i));
+		mfsCompositionResult.changePoint(i, newValue);
+
+		if (i == Constants::FUNCTION_UPPER_BOUND_INDEX)
+		{
+			break;
+		}
+	}
+
+	return mfsCompositionResult;
 }
 
 bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
@@ -263,6 +307,11 @@ bool operator==(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 		{
 			return false;
 		}
+
+		if (i == Constants::FUNCTION_UPPER_BOUND_INDEX)
+		{
+			break;
+		}
 	}
 	
 	return true;
@@ -295,6 +344,11 @@ bool operator<(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFu
 		{
 			return false;
 		}
+
+		if (i == Constants::FUNCTION_UPPER_BOUND_INDEX)
+		{
+			break;
+		}
 	}
 
 	return true;
@@ -326,6 +380,11 @@ bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFu
 		if (lhs(i) <= rhs(i))
 		{
 			return false;
+		}
+
+		if (i == Constants::FUNCTION_UPPER_BOUND_INDEX)
+		{
+			break;
 		}
 	}
 

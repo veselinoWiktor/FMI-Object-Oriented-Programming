@@ -240,6 +240,60 @@ bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 	return true;
 }
 
+bool operator==(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	{
+		if (lhs(i) != rhs(i))
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool operator!=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	return !(lhs == rhs);
+}
+
+bool operator<(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	{
+		if (lhs(i) >= rhs(i))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool operator<=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	return !(lhs > rhs);
+}
+
+bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	{
+		if (lhs(i) <= rhs(i))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool operator>=(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	return !(lhs < rhs);
+}
+
 int16_t powerOf(int16_t base, uint16_t power)
 {
 	if (power == 0)

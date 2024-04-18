@@ -126,3 +126,53 @@ int16_t ModifiableIntegersFunction::operator()(int16_t _x)
 
 	return functionValues[_x + Constants::FUNCTION_ZERO_INDEX];
 }
+
+ModifiableIntegersFunction& ModifiableIntegersFunction::operator+=(const ModifiableIntegersFunction& other)
+{
+	while ((disabledCount + other.disabledCount) > disabledCapacity)
+	{
+		resize();
+	}
+
+	for (size_t i = 0; i < other.disabledCount; i++)
+	{
+		if (isDisabled(other.disabledPoints[i]))
+		{
+			continue;
+		}
+
+		disabledPoints[disabledCount++] = other.disabledPoints[i];
+	}
+
+	for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
+	{
+		functionValues[i] += other.functionValues[i];
+	}
+	
+	return *this;
+}
+
+ModifiableIntegersFunction& ModifiableIntegersFunction::operator-=(const ModifiableIntegersFunction& other)
+{
+	while ((disabledCount + other.disabledCount) > disabledCapacity)
+	{
+		resize();
+	}
+
+	for (size_t i = 0; i < other.disabledCount; i++)
+	{
+		if (isDisabled(other.disabledPoints[i]))
+		{
+			continue;
+		}
+
+		disabledPoints[disabledCount++] = other.disabledPoints[i];
+	}
+
+	for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
+	{
+		functionValues[i] -= other.functionValues[i];
+	}
+
+	return *this;
+}

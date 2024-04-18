@@ -209,11 +209,27 @@ ModifiableIntegersFunction& ModifiableIntegersFunction::operator^(int16_t power)
 	}
 }
 
+ModifiableIntegersFunction operator+(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	ModifiableIntegersFunction mfsResult = lhs;
+	mfsResult += rhs;
+
+	return mfsResult;
+}
+
+ModifiableIntegersFunction operator-(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
+{
+	ModifiableIntegersFunction mfsResult = lhs;
+	mfsResult -= rhs;
+
+	return mfsResult;
+}
+
 bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
 {
 	int16_t difference = lhs(Constants::FUNCTION_LOWER_BOUND_INDEX) - rhs(Constants::FUNCTION_LOWER_BOUND_INDEX);
 
-	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX + 1; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
 		if ((lhs(i) - rhs(i)) != difference)
 		{

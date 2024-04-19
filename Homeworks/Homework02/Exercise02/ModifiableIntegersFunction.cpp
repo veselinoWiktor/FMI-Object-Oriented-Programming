@@ -173,7 +173,7 @@ ModifiableIntegersFunction& ModifiableIntegersFunction::operator-=(const Modifia
 	return *this;
 }
 
-ModifiableIntegersFunction& ModifiableIntegersFunction::operator^(int16_t power)
+ModifiableIntegersFunction ModifiableIntegersFunction::operator^(int16_t power)
 {
 	if (power < 0)
 	{
@@ -203,7 +203,8 @@ ModifiableIntegersFunction& ModifiableIntegersFunction::operator^(int16_t power)
 	{
 		return *this;
 	}
-	else {
+	else 
+	{
 		for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
 		{
 			functionValues[i] = powerOf(functionValues[i], power);
@@ -293,6 +294,35 @@ void ModifiableIntegersFunction::desrialize(const char* filename)
 	ifs.read((char*)disabledPoints, sizeof(int16_t) * disabledCount);
 	ifs.read((char*)functionValues, sizeof(int16_t) * Constants::FUNCTION_VALUES_COUNT);
 	ifs.close();
+}
+
+void ModifiableIntegersFunction::draw(int16_t startX, int16_t startY) const
+{
+	int16_t endX = startX + 19;
+	int16_t endY = startY + 19;
+
+	for (int i = endY; i >= startY; i--)
+	{
+		for (int j = startX; j <= endX; j++)
+		{
+			if (isDisabled(j))
+			{
+				std::cout << "  ";
+				continue;
+			}
+
+			if (functionValues[j + Constants::FUNCTION_ZERO_INDEX] == i)
+			{
+				std::cout << "()";
+			}
+			else
+			{
+				std::cout << "  ";
+			}
+		}
+
+		std::cout << std::endl;
+	}
 }
 
 ModifiableIntegersFunction operator+(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)

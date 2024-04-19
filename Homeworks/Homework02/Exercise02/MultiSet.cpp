@@ -34,7 +34,7 @@ size_t MultiSet::getPosition(unsigned num) const
 
 size_t MultiSet::bucketsNeeded(size_t num) const
 {
-	size_t result = ((maxNumber + 1) * numberBits) / MultiSetConstants::BITS_IN_BYTE;
+	size_t result = (maxNumber * numberBits) / MultiSetConstants::BITS_IN_BYTE;
 	if ((maxNumber + 1) % MultiSetConstants::BITS_IN_BYTE != 0)
 		result++;
 
@@ -80,8 +80,7 @@ void MultiSet::printBucketMemory(unsigned bucketIdx) const
 	if (bucketIdx == bucketsCount - 1)
 	{
 		unsigned lastNumEndPos = getPosition(maxNumber + 1);
-		upperBound = lastNumEndPos == 0 ? upperBound : lastNumEndPos;
-		//think of a way to fix it
+		upperBound = (lastNumEndPos == 0) ? upperBound : lastNumEndPos;
 	}
 
 	bool bitVal = 0;
@@ -235,6 +234,7 @@ void MultiSet::printMemory() const
 	for (size_t i = 0; i < bucketsCount; i++)
 	{
 		printBucketMemory(i);
+		std::cout << " ";
 	}
 	std::cout << std::endl;
 }
@@ -243,13 +243,13 @@ void MultiSet::serialize(const char* filename) const
 {
 	if (!filename)
 	{
-		throw std::invalid_argument("Filename was nullptr");
+		throw std::invalid_argument("Filename was nullptr.");
 	}
 
 	std::ofstream ofs(filename, std::ios::binary);
 	if (!ofs.is_open())
 	{
-		throw std::runtime_error("Stream is already opened!");
+		throw std::runtime_error("Stream is already opened.");
 	}
 
 	ofs.write((const char*)&maxNumber, sizeof(size_t));
@@ -262,13 +262,13 @@ void MultiSet::deserialize(const char* filename)
 {
 	if (!filename)
 	{
-		throw std::invalid_argument("Filename was nullptr");
+		throw std::invalid_argument("Filename was nullptr.");
 	}
 
 	std::ifstream ifs(filename, std::ios::binary);
 	if (!ifs.is_open())
 	{
-		throw std::runtime_error("Stream is already opened!");
+		throw std::runtime_error("Stream is already opened.");
 	}
 
 	ifs.read((char*)&maxNumber, sizeof(size_t));

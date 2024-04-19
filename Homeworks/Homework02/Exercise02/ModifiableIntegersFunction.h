@@ -41,7 +41,7 @@ public:
 
 	ModifiableIntegersFunction& operator+=(const ModifiableIntegersFunction& other);
 	ModifiableIntegersFunction& operator-=(const ModifiableIntegersFunction& other);
-	ModifiableIntegersFunction& operator^(int16_t power); // f^k - even -1, because f-1 would return inverse function
+	ModifiableIntegersFunction operator^(int16_t power); // f^k - even -1, because f-1 would return inverse function
 
 	bool isInjective() const;
 	bool isSurjective() const;
@@ -50,7 +50,7 @@ public:
 	void serialize(const char* filename) const;
 	void desrialize(const char* filename);
 
-	void draw() const;
+	void draw(int16_t startX, int16_t startY) const;
 };
 
 ModifiableIntegersFunction operator+(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs);

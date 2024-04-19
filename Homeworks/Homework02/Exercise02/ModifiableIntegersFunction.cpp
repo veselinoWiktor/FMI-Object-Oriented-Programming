@@ -43,14 +43,14 @@ void ModifiableIntegersFunction::resize()
 
 void ModifiableIntegersFunction::initFunctionData(int16_t(*functionPredicate)(int16_t))
 {
-	for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
+	for (uint32_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
 	{
 		functionValues[i] = functionPredicate(i - Constants::FUNCTION_ZERO_INDEX);
 	}
 
 	disabledCapacity = 16;
 	disabledCount = 0;
-	disabledPoints = new int16_t[disabledCapacity];
+	disabledPoints = new int16_t[disabledCapacity]{ 0 };
 }
 
 bool ModifiableIntegersFunction::isDisabled(int16_t _x) const
@@ -177,19 +177,20 @@ ModifiableIntegersFunction ModifiableIntegersFunction::operator^(int16_t power)
 {
 	if (power < 0)
 	{
-		if (power % 2 == 0) // (f^-1)^-1 = f тоест за всяка четна отрицателна степен функцията се запазва
-		{
-			return *this;
-		}
-		else // за всяка нечетна отрицателна степен функцията се обръща
-		{
+		if (power % 2 != 0)// за всяка нечетна отрицателна степен функцията се обръща
+		{						
 			if (!isInjective())
 			{
 				throw std::logic_error("The function is irreversible");
 			}
 
+			ModifiableIntegersFunction reversed = *this;
+			for (uint32_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
+			{
+				reversed.changePoint(functionValues[i], i + Constants::FUNCTION_LOWER_BOUND_INDEX);
+			}
 
-			//reverse function
+			return reversed;
 		}
 	}
 	else if (power == 0)
@@ -199,33 +200,33 @@ ModifiableIntegersFunction ModifiableIntegersFunction::operator^(int16_t power)
 			functionValues[i] = 1;
 		}
 	}
-	else if (power == 1)
-	{
-		return *this;
-	}
-	else 
+	else if (power > 1)
 	{
 		for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
 		{
 			functionValues[i] = powerOf(functionValues[i], power);
 		}
 	}
+
+	return *this;
 }
 
 bool ModifiableIntegersFunction::isInjective() const
 {
 	MultiSet ms(Constants::FUNCTION_VALUES_COUNT - 1, 1);
 
-	int16_t currValue;
+	int16_t currValue = 0;
+	int16_t currCount = 0;
 	for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
 	{
 		currValue = functionValues[i];
 
-		if (ms.containsCount(currValue + Constants::FUNCTION_ZERO_INDEX) == 1)
+		currCount = ms.containsCount(currValue + Constants::FUNCTION_ZERO_INDEX);
+		if (currCount == 1)
 		{
 			return false;
 		}
-		
+
 		ms.addNumber(currValue + Constants::FUNCTION_ZERO_INDEX);
 	}
 
@@ -238,7 +239,7 @@ bool ModifiableIntegersFunction::isSurjective() const
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -287,7 +288,7 @@ void ModifiableIntegersFunction::desrialize(const char* filename)
 
 	ifs.read((char*)&disabledCount, sizeof(int16_t));
 	disabledCapacity = std::max(nextPowerOfTwo(disabledCount), (unsigned)16);
-	
+
 	delete[] disabledPoints;
 	disabledPoints = new int16_t[disabledCapacity];
 
@@ -349,7 +350,7 @@ ModifiableIntegersFunction operator*(const ModifiableIntegersFunction& lhs, cons
 	int16_t newValue = 0;
 	bool isLhsValueDisabled = false;
 	bool isRhsValueDisabled = false;
-	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	for (int32_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
 		isLhsValueDisabled = lhs.isDisabled(i);
 		isRhsValueDisabled = rhs.isDisabled(i);
@@ -374,9 +375,16 @@ ModifiableIntegersFunction operator*(const ModifiableIntegersFunction& lhs, cons
 
 bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
 {
-	int16_t difference = lhs(Constants::FUNCTION_LOWER_BOUND_INDEX) - rhs(Constants::FUNCTION_LOWER_BOUND_INDEX);
+	int16_t difference = 0;
+	for (int32_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	{
+		if (!lhs.isDisabled(i) && !rhs.isDisabled(i))
+		{
+			difference = lhs(Constants::FUNCTION_LOWER_BOUND_INDEX) - rhs(Constants::FUNCTION_LOWER_BOUND_INDEX);
+		}
+	}
 
-	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX + 1; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	for (int32_t i = Constants::FUNCTION_LOWER_BOUND_INDEX + 1; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
 		if ((lhs(i) - rhs(i)) != difference)
 		{
@@ -391,7 +399,7 @@ bool operator==(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 {
 	bool isLhsValueDisabled = false;
 	bool isRhsValueDisabled = false;
-	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	for (int32_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
 		isLhsValueDisabled = lhs.isDisabled(i);
 		isRhsValueDisabled = rhs.isDisabled(i);
@@ -410,11 +418,6 @@ bool operator==(const ModifiableIntegersFunction& lhs, const ModifiableIntegersF
 		{
 			return false;
 		}
-
-		if (i == Constants::FUNCTION_UPPER_BOUND_INDEX)
-		{
-			break;
-		}
 	}
 
 	return true;
@@ -429,7 +432,7 @@ bool operator<(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFu
 {
 	bool isLhsValueDisabled = false;
 	bool isRhsValueDisabled = false;
-	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	for (int32_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
 		isLhsValueDisabled = lhs.isDisabled(i);
 		isRhsValueDisabled = rhs.isDisabled(i);
@@ -447,11 +450,6 @@ bool operator<(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFu
 		{
 			return false;
 		}
-
-		if (i == Constants::FUNCTION_UPPER_BOUND_INDEX)
-		{
-			break;
-		}
 	}
 
 	return true;
@@ -466,7 +464,7 @@ bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFu
 {
 	bool isLhsValueDisabled = false;
 	bool isRhsValueDisabled = false;
-	for (int16_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
+	for (int32_t i = Constants::FUNCTION_LOWER_BOUND_INDEX; i <= Constants::FUNCTION_UPPER_BOUND_INDEX; i++)
 	{
 		isLhsValueDisabled = lhs.isDisabled(i);
 		isRhsValueDisabled = rhs.isDisabled(i);
@@ -483,11 +481,6 @@ bool operator>(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFu
 		if (lhs(i) <= rhs(i))
 		{
 			return false;
-		}
-
-		if (i == Constants::FUNCTION_UPPER_BOUND_INDEX)
-		{
-			break;
 		}
 	}
 

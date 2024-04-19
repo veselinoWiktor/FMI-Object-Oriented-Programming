@@ -50,22 +50,10 @@ public:
 	void serialize(const char* filename) const;
 	void deserialize(const char* filename);
 
-	//friend MultiSet Union(const MultiSet& lhs, const MultiSet& rhs);
 	friend MultiSet Intersect(const MultiSet& lhs, const MultiSet& rhs);
 	friend MultiSet Differnce(const MultiSet& lhs, const MultiSet& rhs);
 	MultiSet Complement() const;
-
-	//Implement if enough time
-	//MultiSet& operator&=(const MultiSet& other); //Intersection
-	//MultiSet& operator|=(const MultiSet& other); //Union
-	//MultiSet& operator/=(const MultiSet& other); //Difference
 };
-
-//Implement if enough time
-//MultiSet operator&(const MultiSet& lhs, const MultiSet& rhs); //Intersection
-//MultiSet operator|(const MultiSet& lhs, const MultiSet& rhs); //Union
-//MultiSet operator/(const MultiSet& lhs, const MultiSet& rhs); //Difference
-//MultiSet operator~(const MultiSet& other); //Complement
 
 unsigned powerOfTwo(unsigned n);
 unsigned getFileSize(std::ifstream& ifs);

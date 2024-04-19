@@ -3,7 +3,7 @@
 
 int main()
 {
-	try
+	/*try
 	{
 		MultiSet ms;
 		ms.deserialize("multiset.txt");
@@ -24,5 +24,58 @@ int main()
 	catch (const std::out_of_range& e)
 	{
 		std::cout << e.what();
-	}
+	}*/
+
+	MultiSet ms(21, 5);
+	ms.addNumber(0);
+	ms.addNumber(0);
+	ms.addNumber(0);
+	ms.addNumber(0);
+	ms.addNumber(0);
+	ms.addNumber(0);
+	ms.addNumber(0);
+	ms.addNumber(1);
+	ms.addNumber(1);
+	ms.addNumber(1);
+	ms.addNumber(1);
+	ms.addNumber(1);
+	ms.addNumber(2);
+	ms.addNumber(2);
+	ms.addNumber(2);
+	ms.addNumber(2);
+	ms.addNumber(2);
+	ms.addNumber(2);
+	ms.addNumber(2);
+	ms.addNumber(2);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(3);
+	ms.addNumber(10);
+	ms.addNumber(21);
+
+	MultiSet ms2(3, 3);
+
+	MultiSet intersection = Intersect(ms, ms2);
+
+
+	intersection.printMemory();
+
 }

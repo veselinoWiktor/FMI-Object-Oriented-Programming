@@ -34,8 +34,8 @@ size_t MultiSet::getPosition(unsigned num) const
 
 size_t MultiSet::bucketsNeeded(size_t num) const
 {
-	size_t result = (maxNumber * numberBits) / MultiSetConstants::BITS_IN_BYTE;
-	if ((maxNumber + 1) % MultiSetConstants::BITS_IN_BYTE != 0)
+	size_t result = ((maxNumber + 1) * numberBits) / MultiSetConstants::BITS_IN_BYTE;
+	if (((maxNumber + 1) * numberBits) % MultiSetConstants::BITS_IN_BYTE != 0)
 		result++;
 
 	return result;

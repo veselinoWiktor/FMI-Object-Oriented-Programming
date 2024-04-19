@@ -26,56 +26,19 @@ int main()
 		std::cout << e.what();
 	}*/
 
-	MultiSet ms(21, 5);
-	ms.addNumber(0);
-	ms.addNumber(0);
-	ms.addNumber(0);
-	ms.addNumber(0);
-	ms.addNumber(0);
-	ms.addNumber(0);
+	MultiSet ms(10, 1);
 	ms.addNumber(0);
 	ms.addNumber(1);
-	ms.addNumber(1);
-	ms.addNumber(1);
-	ms.addNumber(1);
-	ms.addNumber(1);
 	ms.addNumber(2);
-	ms.addNumber(2);
-	ms.addNumber(2);
-	ms.addNumber(2);
-	ms.addNumber(2);
-	ms.addNumber(2);
-	ms.addNumber(2);
-	ms.addNumber(2);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
-	ms.addNumber(3);
 	ms.addNumber(3);
 	ms.addNumber(10);
-	ms.addNumber(21);
 
-	MultiSet ms2(3, 3);
+	ms.printMemory();
 
-	MultiSet intersection = Intersect(ms, ms2);
+	/*MultiSet ms2(3, 3);
 
 
-	intersection.printMemory();
+
+	intersection.printMemory();*/
 
 }

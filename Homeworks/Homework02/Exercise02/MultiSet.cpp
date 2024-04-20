@@ -58,7 +58,10 @@ void MultiSet::setNumberBits(size_t _numberBits)
 	{
 		numberBits = _numberBits;
 	}
-	//TODO might need to throw exception
+	else
+	{
+		throw std::invalid_argument("k was less than 1, or more than 8");
+	}
 }
 
 void MultiSet::initData()

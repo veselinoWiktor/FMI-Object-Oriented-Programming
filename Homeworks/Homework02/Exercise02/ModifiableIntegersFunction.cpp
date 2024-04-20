@@ -188,6 +188,7 @@ ModifiableIntegersFunction& ModifiableIntegersFunction::operator-=(const Modifia
 	return *this;
 }
 
+//Power of function
 ModifiableIntegersFunction ModifiableIntegersFunction::operator^(int16_t power)
 {
 	if (power < 0)
@@ -314,8 +315,8 @@ void ModifiableIntegersFunction::desrialize(const char* filename)
 
 void ModifiableIntegersFunction::draw(int16_t startX, int16_t startY) const
 {
-	int16_t endX = startX + 19;
-	int16_t endY = startY + 19;
+	int16_t endX = startX + 20;
+	int16_t endY = startY + 20;
 
 	for (int i = endY; i >= startY; i--)
 	{
@@ -388,6 +389,7 @@ ModifiableIntegersFunction operator*(const ModifiableIntegersFunction& lhs, cons
 	return mfsCompositionResult;
 }
 
+//Parallel operator
 bool operator||(const ModifiableIntegersFunction& lhs, const ModifiableIntegersFunction& rhs)
 {
 	int16_t difference = 0;

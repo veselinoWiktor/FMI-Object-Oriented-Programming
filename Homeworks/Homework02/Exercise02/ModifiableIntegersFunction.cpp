@@ -6,12 +6,15 @@ void ModifiableIntegersFunction::copyFrom(const ModifiableIntegersFunction& othe
 {
 	disabledCapacity = other.disabledCapacity;
 	disabledCount = other.disabledCount;
+	function = other.function;
+
+	function = other.function;
 
 	disabledPoints = new int16_t[disabledCapacity];
 
-	for (size_t i = 0; i < disabledCount; i++)
+	for (uint32_t i = 0; i < disabledCount; i++)
 	{
-		disabledPoints[i] = other.disabledPoints[i]; //might have some problem
+		disabledPoints[i] = other.disabledPoints[i];
 	}
 
 	for (size_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
@@ -24,6 +27,7 @@ void ModifiableIntegersFunction::free()
 {
 	delete[] disabledPoints;
 	disabledPoints = nullptr;
+	function = nullptr;
 	disabledCapacity = disabledCount = 0;
 }
 
@@ -41,11 +45,20 @@ void ModifiableIntegersFunction::resize()
 	disabledPoints = newDisabledPoints;
 }
 
-void ModifiableIntegersFunction::initFunctionData(int16_t(*functionPredicate)(int16_t))
+void ModifiableIntegersFunction::setFunction(int16_t(*functionPredicate)(int16_t))
+{
+	if (!functionPredicate)
+	{
+		throw std::invalid_argument("Nullptr was given.");
+	}
+	function = functionPredicate;
+}
+
+void ModifiableIntegersFunction::initFunctionData()
 {
 	for (uint32_t i = 0; i < Constants::FUNCTION_VALUES_COUNT; i++)
 	{
-		functionValues[i] = functionPredicate(i - Constants::FUNCTION_ZERO_INDEX);
+		functionValues[i] = function(i - Constants::FUNCTION_ZERO_INDEX);
 	}
 
 	disabledCapacity = 16;
@@ -69,12 +82,14 @@ bool ModifiableIntegersFunction::isDisabled(int16_t _x) const
 ModifiableIntegersFunction::ModifiableIntegersFunction()
 {
 	int16_t(*defaultFunction)(int16_t) = [](int16_t x) { return (int16_t)0; };
-	initFunctionData(defaultFunction);
+	setFunction(defaultFunction);
+	initFunctionData();
 }
 
 ModifiableIntegersFunction::ModifiableIntegersFunction(int16_t(*functionPredicate)(int16_t))
 {
-	initFunctionData(functionPredicate);
+	setFunction(functionPredicate);
+	initFunctionData();
 }
 
 ModifiableIntegersFunction::ModifiableIntegersFunction(const ModifiableIntegersFunction& other)

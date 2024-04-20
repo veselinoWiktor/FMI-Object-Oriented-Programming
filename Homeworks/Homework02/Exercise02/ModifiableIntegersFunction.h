@@ -12,6 +12,7 @@ namespace Constants
 class ModifiableIntegersFunction
 {
 private:
+	int16_t(*function)(int16_t);
 	int16_t functionValues[Constants::FUNCTION_VALUES_COUNT];
 
 	int16_t* disabledPoints = nullptr;
@@ -23,7 +24,8 @@ private:
 
 	void resize();
 
-	void initFunctionData(int16_t(*functionPredicate)(int16_t));
+	void setFunction(int16_t(*functionPredicate)(int16_t));
+	void initFunctionData();
 
 public:
 	ModifiableIntegersFunction();

@@ -28,6 +28,20 @@ public:
 	DynamicArray& operator=(DynamicArray&& other) noexcept;
 
 	~DynamicArray() noexcept;
+
+	void pushBack(const A& newElem);
+	void pushBack(A&& newElem);
+
+	void popBack();
+
+	void setAtIndex(const A& element, size_t index);
+	void setAtIndex(A&& element, size_t index);
+
+	size_t getSize() const;
+	bool isEmpty() const;
+
+	const A& operator[](size_t index) const;
+	A& operator[](size_t index);
 };
 
 size_t nextPowerOfTwo(size_t n);

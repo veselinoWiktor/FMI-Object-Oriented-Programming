@@ -90,6 +90,85 @@ DynamicArray::~DynamicArray() noexcept
 	free();
 }
 
+void DynamicArray::pushBack(const A& newElem)
+{
+	setAtIndex(newElem, size);
+}
+
+void DynamicArray::pushBack(A&& newElem)
+{
+	setAtIndex(std::move(newElem), size);
+}
+
+void DynamicArray::popBack()
+{
+	if (size)
+		arr[size--] = A();
+	else
+		throw std::length_error("Already empty!");
+	
+	if (size * 4 <= capacity && capacity > 1)
+		resize(capacity / 2);
+}
+
+void DynamicArray::setAtIndex(const A& element, size_t index)
+{
+	if (index > size)
+	{
+		throw std::out_of_range("Index was out of range!");
+	}
+
+	if (size >= capacity)
+	{
+		resize(capacity * 2);
+	}
+
+	arr[index] = element;
+	size++;
+}
+
+void DynamicArray::setAtIndex(A&& element, size_t index)
+{
+	if (index > size)
+	{
+		throw std::out_of_range("Index was out of range!");
+	}
+
+	if (size >= capacity)
+	{
+		resize(capacity * 2);
+	}
+
+	arr[index] = std::move(element);
+	size++;
+}
+
+size_t DynamicArray::getSize() const
+{
+	return size;
+}
+
+bool DynamicArray::isEmpty() const
+{
+	return size == 0;
+}
+
+const A& DynamicArray::operator[](size_t index) const
+{
+	if (index > size)
+		throw std::out_of_range("Index was out of range!");
+
+	return arr[index];
+}
+
+A& DynamicArray::operator[](size_t index)
+{
+	if (index > size)
+		throw std::out_of_range("Index was out of range!");
+
+	return arr[index];
+}
+
 size_t nextPowerOfTwo(size_t n)
 {
 	size_t step = 1;

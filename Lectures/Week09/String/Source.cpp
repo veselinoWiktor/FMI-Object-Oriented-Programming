@@ -7,5 +7,5 @@ int main()
 	str += "viktor";
 	std::cout << str.getLength() << std::endl;
 	std::cout << str << std::endl;
-	std::cin >> str >> std::endl;
+	std::cin >> str;
 }

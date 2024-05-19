@@ -151,7 +151,7 @@ std::ostream& operator<<(std::ostream& os, const String& obj)
 String operator+(const String& lhs, const String& rhs)
 {
 	size_t size = lhs._size + rhs._size;
-	size_t capacity = nextPowerOfTwo(size);
+	size_t capacity = std::max(nextPowerOfTwo(size), 8ull);
 
 	String result(capacity);
 	strcpy(result._data, lhs._data);

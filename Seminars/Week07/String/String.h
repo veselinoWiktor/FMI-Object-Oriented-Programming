@@ -42,5 +42,3 @@ bool operator<(const String& lhs, const String& rhs);
 bool operator>=(const String& lhs, const String& rhs);
 bool operator>(const String& lhs, const String& rhs);
 bool operator<=(const String& lhs, const String& rhs);
-
-

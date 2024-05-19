@@ -13,6 +13,7 @@ private:
 	void copyFrom(const String& other);
 	void free();
 
+	explicit String(size_t capacity);
 public:
 	String();
 	String(const char* data);
@@ -29,12 +30,12 @@ public:
 	char& operator[](size_t index);
 
 	String& operator+=(const String& other);
+	friend String operator+(const String& lhs, const String& rhs);
 
 	friend std::istream& operator>>(std::istream& is, String& obj);
-	friend std::ostream& operator<<(std::ostream& os, const String& obj);
 };
 
-String operator+(const String& lhs, const String& rhs);
+std::ostream& operator<<(std::ostream& os, const String& obj);
 
 bool operator==(const String& lhs, const String& rhs);
 bool operator!=(const String& lhs, const String& rhs);

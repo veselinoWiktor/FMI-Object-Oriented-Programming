@@ -19,10 +19,7 @@ void String::resize(size_t newCapacity)
 	_capacity = newCapacity;
 	char* temp = new char[_capacity + 1];
 
-	for (size_t i = 0; i < _size; i++)
-	{
-		temp[i] = _data[i];
-	}
+	strcpy(temp, _data);
 
 	delete[] _data;
 	_data = temp;
@@ -33,17 +30,19 @@ void String::copyFrom(const String& other)
 	_size = other._size;
 	_capacity = other._capacity;
 	_data = new char[_capacity + 1];
-	for (size_t i = 0; i < _size; i++)
-	{
-		_data[i] = other._data[i];
-	}
+	strcpy(_data, other._data);
 }
 
 void String::free()
 {
 	delete[] _data;
+}
+
+String::String(size_t capacity)
+{
 	_size = 0;
-	_capacity = 8;
+	_capacity = capacity;
+	_data = new char[_capacity + 1];
 }
 
 String::String() : String("")
@@ -62,7 +61,7 @@ String::String(const char* data)
 	else
 	{
 		_size = strlen(data);
-		_capacity = std::max(nextPowerOfTwo(_size), (size_t)8);
+		_capacity = std::max(nextPowerOfTwo(_size), 8ull);
 		_data = new char[_capacity + 1];
 		strcpy(_data, data);
 	}
@@ -116,26 +115,23 @@ char& String::operator[](size_t index)
 
 String& String::operator+=(const String& other)
 {
-	while (_capacity <= (_size + other._size))
+	size_t newSize = _size + other._size;
+	if (_capacity <= newSize)
 	{
-		resize(_capacity * 2);
+		resize(nextPowerOfTwo(newSize));
 	}
 
-	for (size_t i = 0; i < other._size; i++)
-	{
-		_data[_size++] = other._data[i];
-	}
+	strncat(_data, other._data, other._size);
 
-	_data[_size] = '\0';
-
+	_size = newSize;
 	return *this;
 }
 
 std::istream& operator>>(std::istream& is, String& obj)
 {
 	char buff[1024];
-	is >> buff;
-
+	is.getline(buff, 1024);
+		
 	size_t buffSize = strlen(buff);
 	if (buffSize > obj._capacity)
 	{
@@ -149,23 +145,18 @@ std::istream& operator>>(std::istream& is, String& obj)
 
 std::ostream& operator<<(std::ostream& os, const String& obj)
 {
-	if (!os.good())
-	{
-		return os;
-	}
-
-	os << obj._data;
-
-	return os;
-
-	//return os << obj._data;
+	return os << obj.c_str();
 }
 
 String operator+(const String& lhs, const String& rhs)
 {
-	String result;
-	result += lhs;
-	result += rhs;
+	size_t size = lhs._size + rhs._size;
+	size_t capacity = nextPowerOfTwo(size);
+
+	String result(capacity);
+	strcpy(result._data, lhs._data);
+	strcat(result._data, rhs._data);
+	result._size = size;
 	return result;
 }
 

@@ -22,7 +22,7 @@ void GraduatedStudent::moveFrom(GraduatedStudent&& other)
 	other.name = nullptr;
 
 	gradesCount = other.gradesCount;
-	other.grades = 0;
+	other.gradesCount = 0;
 
 	grades = other.grades;
 	other.grades = nullptr;
@@ -41,7 +41,7 @@ GraduatedStudent::GraduatedStudent(const char* name, const int* grades, size_t g
 {
 	setName(name);
 	setGrades(grades, gradesCount);
-	setQuoute(quote);
+	setQuote(quote);
 }
 
 GraduatedStudent::GraduatedStudent(const GraduatedStudent& other)
@@ -104,7 +104,7 @@ void GraduatedStudent::setGrades(const int* newGrades, size_t newGradesCount)
 	}
 }
 
-void GraduatedStudent::setQuoute(const char* newQuote)
+void GraduatedStudent::setQuote(const char* newQuote)
 {
 	if (!newQuote || strlen(newQuote) > 30)
 	{
@@ -132,4 +132,17 @@ size_t GraduatedStudent::getGradesCount() const
 const char* GraduatedStudent::getQuote() const
 {
 	return quote;
+}
+
+std::ostream& operator<<(std::ostream& os, const GraduatedStudent& obj)
+{
+	os << obj.getName() << " ";
+	size_t gradesCount = obj.getGradesCount();
+	const int* grades = obj.getGrades();
+	for (size_t i = 0; i < gradesCount; i++)
+	{
+		os << grades[i] << " ";
+	}
+	os << obj.getQuote();
+	return os;
 }

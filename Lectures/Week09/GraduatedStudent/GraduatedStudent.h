@@ -27,7 +27,7 @@ public:
 
 	void setName(const char* newName);
 	void setGrades(const int* newGrades, size_t newGradesCount);
-	void setQuoute(const char* newQuote);
+	void setQuote(const char* newQuote);
 
 	const char* getName() const;
 	const int* getGrades() const;
@@ -35,3 +35,4 @@ public:
 	const char* getQuote() const;
 };
 
+std::ostream& operator<<(std::ostream& os, const GraduatedStudent& obj);

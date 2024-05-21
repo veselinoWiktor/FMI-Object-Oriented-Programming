@@ -4,4 +4,5 @@
 int main()
 {
 	ImmutableString ms("Viktor");
+	std::cout << ms;
 }

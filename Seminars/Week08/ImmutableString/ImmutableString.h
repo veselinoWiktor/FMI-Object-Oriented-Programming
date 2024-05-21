@@ -26,7 +26,7 @@ public:
 
 	char operator[](size_t index) const;
 };
-std::ostream& operator<<(std::ostream os, const ImmutableString& str);
+std::ostream& operator<<(std::ostream& os, const ImmutableString& str);
 
 bool operator==(const ImmutableString& lhs, const ImmutableString& rhs);
 bool operator!=(const ImmutableString& lhs, const ImmutableString& rhs);

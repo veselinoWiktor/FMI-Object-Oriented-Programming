@@ -70,7 +70,7 @@ char ImmutableString::operator[](size_t index) const
 	return data[index];
 }
 
-std::ostream& operator<<(std::ostream os, const ImmutableString& str)
+std::ostream& operator<<(std::ostream& os, const ImmutableString& str)
 {
 	return os << str.c_str();
 }

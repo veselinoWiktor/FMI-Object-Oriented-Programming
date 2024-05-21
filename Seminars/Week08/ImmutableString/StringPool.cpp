@@ -76,7 +76,7 @@ const char* StringPool::insert(const char* str, size_t index)
 	}
 
 	//Shifts the nodes
-	for (size_t i = count - 1; i >= 0; i--) 
+	for (int i = (count - 1); i >= 0; i--)
 	{
 		nodes[i + 1] = nodes[i];
 	}

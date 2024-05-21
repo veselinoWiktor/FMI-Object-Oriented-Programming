@@ -33,14 +33,5 @@ public:
 
 	const char* getString(const char* str);
 	void releaseString(const char* str);
-
-	void debug() const
-	{
-		for (size_t i = 0; i < count; i++)
-		{
-			std::cout << nodes[i].data << " ";
-		}
-		std::cout << std::endl;
-	}
 };
 

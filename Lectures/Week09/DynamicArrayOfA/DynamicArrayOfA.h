@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 struct A {
 	int a = 4;
@@ -8,7 +9,7 @@ struct A {
 class DynamicArray
 {
 private:
-	A* arr;
+	A* data;
 	size_t size;
 	size_t capacity;
 	
@@ -20,7 +21,7 @@ private:
 
 public:
 	DynamicArray();
-	DynamicArray(size_t _capacity);
+	DynamicArray(size_t _size);
 	DynamicArray(const DynamicArray& other);
 	DynamicArray(DynamicArray&& other) noexcept;
 

@@ -112,7 +112,7 @@ void DynamicArray::popBack()
 		resize(capacity / 2);
 }
 
-void DynamicArray::setAtIndex(const A& element, size_t index)
+void DynamicArray::setAtIndex(const A& element, int index)
 {
 	if (index > size)
 	{
@@ -124,15 +124,16 @@ void DynamicArray::setAtIndex(const A& element, size_t index)
 		resize(capacity * 2);
 	}
 
-	for (size_t i = index; i < size; i++)
+	for (int i = size - 1; i >= index; i--)
 	{
 		data[i + 1] = data[i];
 	}
 
 	data[index] = element;
+	size++;
 }
 
-void DynamicArray::setAtIndex(A&& element, size_t index)
+void DynamicArray::setAtIndex(A&& element, int index)
 {
 	if (index > size)
 	{
@@ -144,12 +145,13 @@ void DynamicArray::setAtIndex(A&& element, size_t index)
 		resize(capacity * 2);
 	}
 
-	for (size_t i = index; i < size; i++)
+	for (int i = size - 1; i >= index; i--)
 	{
 		data[i + 1] = data[i];
 	}
 
 	data[index] = std::move(element);
+	size++;
 }
 
 size_t DynamicArray::getSize() const

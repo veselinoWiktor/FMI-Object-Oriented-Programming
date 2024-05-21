@@ -35,8 +35,8 @@ public:
 
 	void popBack();
 
-	void setAtIndex(const A& element, size_t index);
-	void setAtIndex(A&& element, size_t index);
+	void setAtIndex(const A& element, int index);
+	void setAtIndex(A&& element, int index);
 
 	size_t getSize() const;
 	bool isEmpty() const;

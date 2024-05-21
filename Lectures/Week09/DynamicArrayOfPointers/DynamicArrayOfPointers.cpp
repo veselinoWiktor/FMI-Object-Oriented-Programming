@@ -1,59 +1,78 @@
 #include "DynamicArrayOfPointers.h"
-#include<iostream>
+#include <iostream>
 
 void DynamicArrayOfPointers::free()
 {
-	for (size_t i = 0; i < _capacity; i++)
-		delete[] _data[i];
+	for (size_t i = 0; i < capacity; i++)
+	{
+		delete data[i];
+	}
 
-	delete[] _data;
+	delete[] data;
 }
 
 void DynamicArrayOfPointers::copyFrom(const DynamicArrayOfPointers& other)
 {
-	_count = other._count;
-	_capacity = other._capacity;
+	capacity = other.capacity;
+	count = other.count;
 
-	_data = new A*[_capacity];
-	for (size_t i = 0; i < _capacity; i++)
+	data = new A * [capacity];
+	for (size_t i = 0; i < capacity; i++)
 	{
-		if (other._data[i] == nullptr)
-			_data[i] = nullptr;
+		if (other.data[i] == nullptr)
+		{
+			data[i] = nullptr;
+		}
 		else
-			_data[i] = new A(*other._data[i]);
+		{
+			data[i] = new A(*other.data[i]);
+		}
 	}
 }
 
 void DynamicArrayOfPointers::moveFrom(DynamicArrayOfPointers&& other)
 {
-	_data = other._data;
-	other._data = nullptr;
+	capacity = other.capacity;
+	other.capacity = 0;
 
-	_count = other._count;
-	other._count = 0;
+	count = other.count;
+	other.count = 0;
 
-	_capacity = other._capacity;
-	other._capacity = 0;
+	data = other.data;
+	other.data = nullptr;
 }
 
 void DynamicArrayOfPointers::resize(size_t newCapacity)
 {
-	A** temp = _data;
+	capacity = newCapacity;
 
-	A** _data = new A*[newCapacity] {nullptr};
+	A** temp = new A * [capacity] {nullptr};
+	for (size_t i = 0; i < capacity; i++)
+	{
+		temp[i] = data[i];
+	}
 
-	for (size_t i = 0; i < _capacity; i++)
-		_data[i] = temp[i];
-
-	delete[] temp;
-
-	_capacity = newCapacity;
+	delete[] data;
+	data = temp;
 }
 
-DynamicArrayOfPointers::DynamicArrayOfPointers() : _count(0)
+int DynamicArrayOfPointers::getFirstFreeIndex() const
 {
-	_capacity = 16;
-	_data = new A*[_capacity] {nullptr};
+	for (size_t i = 0; i < capacity; i++)
+	{
+		if (!data[i])
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+DynamicArrayOfPointers::DynamicArrayOfPointers()
+{
+	capacity = 8;
+	data = new A * [capacity];
 }
 
 DynamicArrayOfPointers::DynamicArrayOfPointers(const DynamicArrayOfPointers& other)
@@ -91,4 +110,137 @@ DynamicArrayOfPointers& DynamicArrayOfPointers::operator=(DynamicArrayOfPointers
 DynamicArrayOfPointers::~DynamicArrayOfPointers() noexcept
 {
 	free();
+}
+
+void DynamicArrayOfPointers::addAtFirstFreeIndex(const A& newElem)
+{
+	if (count == capacity)
+	{
+		resize(capacity * 2);
+	}
+
+	int firstFreeIndex = getFirstFreeIndex();
+
+	if (firstFreeIndex == -1)
+	{
+		return;
+	}
+
+	data[firstFreeIndex] = new A(newElem);
+	count++;
+}
+
+void DynamicArrayOfPointers::addAtFirstFreeIndex(A&& newElem)
+{
+	if (count == capacity)
+	{
+		resize(capacity * 2);
+	}
+
+	int firstFreeIndex = getFirstFreeIndex();
+
+	if (firstFreeIndex == -1)
+	{
+		return;
+	}
+
+	data[firstFreeIndex] = new A(std::move(newElem));
+	count++;
+}
+
+void DynamicArrayOfPointers::setAtIndex(const A& obj, size_t index)
+{
+	while (index >= capacity)
+	{
+		resize(capacity * 2);
+	}
+
+	if (data[index] != nullptr)
+	{
+		data[index]->operator=(obj);
+	}
+	else
+	{
+		data[index] = new A(obj);
+		count++;
+	}
+}
+
+void DynamicArrayOfPointers::setAtIndex(A&& obj, size_t index)
+{
+	while (index >= capacity)
+	{
+		resize(capacity * 2);
+	}
+
+	if (data[index] != nullptr)
+	{
+		*data[index] = std::move(obj);
+	}
+	else
+	{
+		data[index] = new A(std::move(obj));
+		count++;
+	}
+}
+
+void DynamicArrayOfPointers::pop_back()
+{
+	if (count == 0)
+	{
+		return;
+	}
+
+	delete data[count - 1];
+	count--;
+}
+
+void DynamicArrayOfPointers::removeAt(size_t index)
+{
+	if (index >= capacity)
+	{
+		return;
+	}
+
+	delete data[index];
+	data[index] = nullptr;
+	count--;
+}
+
+bool DynamicArrayOfPointers::containsAt(size_t index) const
+{
+	return index < capacity && data[index] != nullptr;
+}
+
+size_t DynamicArrayOfPointers::size() const
+{
+	return count;
+}
+
+const A& DynamicArrayOfPointers::operator[](size_t index) const
+{
+	if (index >= capacity)
+	{
+		throw std::out_of_range("DynamicArrayOfPointers::operator[](); index was out of range!");
+	}
+	else if (!data[index])
+	{
+		throw std::invalid_argument("DynamicArrayOfPointers::operator[](); index was nullptr!");
+	}
+
+	return *data[index];
+}
+
+A& DynamicArrayOfPointers::operator[](size_t index)
+{
+	if (index >= capacity)
+	{
+		throw std::out_of_range("DynamicArrayOfPointers::operator[](); index was out of range!");
+	}
+	else if (!data[index])
+	{
+		throw std::invalid_argument("DynamicArrayOfPointers::operator[](); index was nullptr!");
+	}
+
+	return *data[index];
 }

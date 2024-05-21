@@ -9,9 +9,9 @@ struct A
 class DynamicArrayOfPointers
 {
 private:
-	A** _data;
-	size_t _capacity;
-	size_t _count;
+	A** data = nullptr;
+	size_t capacity = 0;
+	size_t count = 0;
 
 	void free();
 	void copyFrom(const DynamicArrayOfPointers& other);
@@ -19,6 +19,7 @@ private:
 
 	void resize(size_t newCapacity);
 
+	int getFirstFreeIndex() const;
 public:
 	DynamicArrayOfPointers();
 	DynamicArrayOfPointers(const DynamicArrayOfPointers& other);
@@ -28,5 +29,22 @@ public:
 	DynamicArrayOfPointers& operator=(DynamicArrayOfPointers&& other) noexcept;
 
 	~DynamicArrayOfPointers() noexcept;
+
+	void addAtFirstFreeIndex(const A& newElem);
+	void addAtFirstFreeIndex(A&& newElem);
+
+	void setAtIndex(const A& obj, size_t index);
+	void setAtIndex(A&& obj, size_t index);
+
+	void pop_back();
+	void removeAt(size_t index);
+
+	bool containsAt(size_t index) const;
+
+	size_t size() const;
+
+	const A& operator[](size_t index) const;
+	A& operator[](size_t index);
+
 };
 

@@ -4,8 +4,8 @@
 int main()
 {
 	String str = "012345678912345";
-	str += "viktor";
+	str += str;
+	std::cin >> str;
 	std::cout << str.getLength() << std::endl;
 	std::cout << str << std::endl;
-	std::cin >> str;
 }

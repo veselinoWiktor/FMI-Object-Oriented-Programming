@@ -47,12 +47,12 @@ Teacher::Teacher(const char* name, int age, const char* const* subjects, size_t 
 	this->subjectsCount = subjectsCount;
 }
 
-Teacher::Teacher(const Teacher& other)
+Teacher::Teacher(const Teacher& other) : Person(other)
 {
 	copyFrom(other);
 }
 
-Teacher::Teacher(Teacher&& other) noexcept
+Teacher::Teacher(Teacher&& other) noexcept : Person(std::move(other))
 {
 	moveFrom(std::move(other));
 }

@@ -45,7 +45,7 @@ String::String(unsigned length)
 {
 	capacity = std::max(nextPowerOfTwo(length), 16u);
 	data = new char[capacity + 1];
-	length = 0;
+	this->length = 0;
 	data[0] = '\0';
 }
 

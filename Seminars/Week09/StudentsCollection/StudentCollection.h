@@ -8,7 +8,6 @@ private:
 	size_t count = 0;
 	size_t capacity;
 
-	size_t size = 0;
 	size_t firstFreeIndex = 0;
 
 	void copyFrom(const StudentCollection& other);
@@ -18,7 +17,6 @@ private:
 	void resize(size_t newCap);
 
 	void goToNextFreeIndex();
-	size_t getLastFreeIndex() const;
 
 public:
 	StudentCollection();

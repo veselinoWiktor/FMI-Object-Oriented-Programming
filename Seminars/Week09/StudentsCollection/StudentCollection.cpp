@@ -2,32 +2,24 @@
 
 void StudentCollection::copyFrom(const StudentCollection& other)
 {
-	size = other.size;
 	capacity = other.capacity;
 	count = other.count;
 	firstFreeIndex = other.firstFreeIndex;
 
-	students = new Student * [capacity];
-	for (size_t i = 0; i < size; i++)
+	students = new Student * [capacity] {nullptr};
+	for (size_t i = 0; i < capacity; i++)
 	{
-		if (!other.students[i])
-		{
-			students[i] = nullptr; //this check
-		}
-		else
-		{
+		if (other.students[i] != nullptr)
 			students[i] = new Student(*other.students[i]); //!!!
-		}
 	}
 }
 
 void StudentCollection::moveFrom(StudentCollection&& other)
 {
-	size = other.size;
-	capacity = other.capacity;
 	count = other.count;
+	capacity = other.capacity;
 	firstFreeIndex = other.firstFreeIndex;
-	other.size = other.capacity = other.count = other.firstFreeIndex = 0;
+	other.capacity = other.count = other.firstFreeIndex = 0;
 
 	students = other.students;
 	other.students = nullptr;
@@ -35,7 +27,7 @@ void StudentCollection::moveFrom(StudentCollection&& other)
 
 void StudentCollection::free()
 {
-	for (size_t i = 0; i < size; i++)
+	for (size_t i = 0; i < capacity; i++)
 	{
 		delete students[i];
 	}
@@ -45,8 +37,8 @@ void StudentCollection::free()
 void StudentCollection::resize(size_t newCap)
 {
 	capacity = newCap;
-	Student** temp = new Student * [capacity];
-	for (size_t i = 0; i < size; i++)
+	Student** temp = new Student * [capacity] {nullptr};
+	for (size_t i = 0; i < capacity; i++)
 	{
 		temp[i] = students[i];
 	}
@@ -67,21 +59,9 @@ void StudentCollection::goToNextFreeIndex()
 	firstFreeIndex = capacity;
 }
 
-size_t StudentCollection::getLastFreeIndex() const
-{
-	for (size_t i = size - 1; i >= 0; i--)
-	{
-		if (!students[i])
-		{
-			return i + 1; //why?
-		}
-	}
-	return 0;
-}
-
 StudentCollection::StudentCollection() : capacity(16)
 {
-	students = new Student * [capacity] {nullptr}; //don't forget nullptr
+	students = new Student * [capacity] {nullptr};
 }
 
 StudentCollection::StudentCollection(const StudentCollection& other)
@@ -131,11 +111,6 @@ unsigned StudentCollection::addAtFirstFree(const Student& student)
 	students[firstFreeIndex] = new Student(student);
 	count++;
 	goToNextFreeIndex();
-
-	if (firstFreeIndex >= size)
-	{
-		size++; //why?
-	}
 }
 
 unsigned StudentCollection::addAtFirstFree(Student&& student)
@@ -148,11 +123,6 @@ unsigned StudentCollection::addAtFirstFree(Student&& student)
 	students[firstFreeIndex] = new Student(std::move(student));
 	count++;
 	goToNextFreeIndex();
-
-	if (firstFreeIndex >= size)
-	{
-		size++; //why?
-	}
 }
 
 void StudentCollection::setAtIdx(const Student& student, size_t idx)
@@ -175,11 +145,6 @@ void StudentCollection::setAtIdx(const Student& student, size_t idx)
 	else
 	{
 		*students[idx] = student; //Here we already have a student so we need op=
-	}
-
-	if (idx >= size)
-	{
-		size = idx + 1;//Why?
 	}
 }
 
@@ -204,16 +169,11 @@ void StudentCollection::setAtIdx(Student&& student, size_t idx)
 	{
 		*students[idx] = std::move(student); //Here we already have a student so we need op=
 	}
-
-	if (idx >= size)
-	{
-		size = idx + 1;//Why?
-	}
 }
 
 void StudentCollection::removeAtIdx(size_t idx)
 {
-	if (idx >= size)
+	if (idx >= capacity)
 	{
 		throw std::out_of_range("StudentCollection::removeAtIdx(); Index was out of range!");
 	}
@@ -228,11 +188,9 @@ void StudentCollection::removeAtIdx(size_t idx)
 		{
 			firstFreeIndex = idx;
 		}
-
-		size = getLastFreeIndex();
 	}
 
-	if (size * 4 <= capacity)
+	if (count * 4 <= capacity)
 	{
 		resize(capacity / 2);
 	}
@@ -240,7 +198,7 @@ void StudentCollection::removeAtIdx(size_t idx)
 
 bool StudentCollection::containsAt(size_t idx) const
 {
-	return idx <= capacity && students[idx] != nullptr;
+	return idx < capacity && students[idx] != nullptr;
 }
 
 size_t StudentCollection::getNumberInClass(const String& name) const

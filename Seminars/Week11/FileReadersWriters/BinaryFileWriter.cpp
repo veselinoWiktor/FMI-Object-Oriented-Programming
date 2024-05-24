@@ -7,7 +7,6 @@ BinaryFileWriter::BinaryFileWriter(const String& filePath) : FileWriter(filePath
 void BinaryFileWriter::write(const int* arr, size_t size) const
 {
 	std::ofstream outFile(filePath.c_str(), std::ios::binary);
-
 	if (!outFile.is_open())
 	{
 		throw std::exception("Cannot open file!");

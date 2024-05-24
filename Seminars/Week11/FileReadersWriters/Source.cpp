@@ -7,7 +7,7 @@
 #include "FilePath.h"
 
 FileReader* getFileReader(const String& filename) {
-	String filepath(filename);
+	FilePath filepath(filename);
 	if (filepath.getExtension() == ".csv") {
 		return new CSVFileReader(filename);
 	}
@@ -21,7 +21,7 @@ FileReader* getFileReader(const String& filename) {
 }
 
 FileWriter* getFileWriter(const String& filename) {
-	String filepath(filename);
+	FilePath filepath(filename);
 	if (filepath.getExtension() == ".csv") {
 		return new CSVFileWriter(filename);
 	}

@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-template<class Base, class Factory>
+template<class Base>
 class Container
 {
 private:
@@ -9,8 +9,8 @@ private:
 	size_t size;
 	size_t capacity;
 
-	void copyFrom(const Container<Base, Factory>& other);
-	void moveFrom(Container<Base, Factory>&& other);
+	void copyFrom(const Container<Base>& other);
+	void moveFrom(Container<Base>&& other);
 	void free();
 
 	void resize(size_t newCap);
@@ -18,14 +18,14 @@ private:
 public:
 	Container();
 
-	Container(const Container<Base, Factory>& other);
-	Container(Container<Base, Factory>&& other) noexcept;
-	Container<Base, Factory>& operator=(const Container<Base, Factory>& other);
-	Container<Base, Factory>& operator=(Container<Base, Factory>&& other) noexcept;
+	Container(const Container<Base>& other);
+	Container(Container<Base>&& other) noexcept;
+	Container<Base>& operator=(const Container<Base>& other);
+	Container<Base>& operator=(Container<Base>&& other) noexcept;
 	~Container();
 
 	void add(const Base& elem);
-	void add(const char* str);
+	void add(const Base* elemPtr); //Factory created element
 
 	const Base* operator[](size_t index) const;
 	Base* operator[](size_t index);
@@ -33,8 +33,8 @@ public:
 	size_t getSize() const;
 };
 
-template<class Base, class Factory>
-void Container<Base, Factory>::copyFrom(const Container<Base, Factory>& other)
+template<class Base>
+void Container<Base, >::copyFrom(const Container<Base, >& other)
 {
 	capacity = other.capacity;
 	size = other.size;
@@ -45,15 +45,15 @@ void Container<Base, Factory>::copyFrom(const Container<Base, Factory>& other)
 	}
 }
 
-template<class Base, class Factory>
-void Container<Base, Factory>::moveFrom(Container<Base, Factory>&& other)
+template<class Base>
+void Container<Base>::moveFrom(Container<Base>&& other)
 {
 	data = other.data;
 	other.data = nullptr;
 }
 
-template<class Base, class Factory>
-void Container<Base, Factory>::free()
+template<class Base>
+void Container<Base>::free()
 {
 	for (size_t i = 0; i < size; i++)
 	{
@@ -62,8 +62,8 @@ void Container<Base, Factory>::free()
 	delete[] data;
 }
 
-template<class Base, class Factory>
-void Container<Base, Factory>::resize(size_t newCap)
+template<class Base>
+void Container<Base>::resize(size_t newCap)
 {
 	capacity = newCap;
 	Base** temp = new Base * [capacity] {nullptr};
@@ -75,26 +75,26 @@ void Container<Base, Factory>::resize(size_t newCap)
 	data = temp;
 }
 
-template<class Base, class Factory>
-Container<Base, Factory>::Container() : size(0), capacity(8)
+template<class Base>
+Container<Base>::Container() : size(0), capacity(8)
 {
 	data = new Base * [capacity] {nullptr};
 }
 
-template<class Base, class Factory>
-Container<Base, Factory>::Container(const Container<Base, Factory>& other)
+template<class Base>
+Container<Base>::Container(const Container<Base>& other)
 {
 	copyFrom(other);
 }
 
-template<class Base, class Factory>
-Container<Base, Factory>::Container(Container<Base, Factory>&& other) noexcept
+template<class Base>
+Container<Base>::Container(Container<Base>&& other) noexcept
 {
 	moveFrom(std::move(other));
 }
 
-template<class Base, class Factory>
-Container<Base, Factory>& Container<Base, Factory>::operator=(const Container<Base, Factory>& other)
+template<class Base>
+Container<Base>& Container<Base>::operator=(const Container<Base>& other)
 {
 	if (this != &other)
 	{
@@ -105,8 +105,8 @@ Container<Base, Factory>& Container<Base, Factory>::operator=(const Container<Ba
 	return *this;
 }
 
-template<class Base, class Factory>
-Container<Base, Factory>& Container<Base, Factory>::operator=(Container<Base, Factory>&& other) noexcept
+template<class Base>
+Container<Base>& Container<Base>::operator=(Container<Base>&& other) noexcept
 {
 	if (this != &other)
 	{
@@ -117,14 +117,14 @@ Container<Base, Factory>& Container<Base, Factory>::operator=(Container<Base, Fa
 	return *this;
 }
 
-template<class Base, class Factory>
-Container<Base, Factory>::~Container()
+template<class Base>
+Container<Base>::~Container()
 {
 	free();
 }
 
-template<class Base, class Factory>
-void Container<Base, Factory>::add(const Base& elem)
+template<class Base>
+void Container<Base>::add(const Base& elem)
 {
 	if (size == capacity)
 	{
@@ -134,25 +134,19 @@ void Container<Base, Factory>::add(const Base& elem)
 	data[size++] = elem.clone();
 }
 
-
-template<class Base, class Factory>
-void Container<Base, Factory>::add(const char* str)
+template<class Base>
+inline void Container<Base>::add(const Base* elemPtr)
 {
 	if (size == capacity)
 	{
 		resize(capacity * 2);
 	}
 
-	Base* ptr = Factory::create(str);
-
-	if (ptr)
-	{
-		data[size++] = ptr;
-	}
+	data[size++] = elemPtr;
 }
 
-template<class Base, class Factory>
-const Base* Container<Base, Factory>::operator[](size_t index) const
+template<class Base>
+const Base* Container<Base>::operator[](size_t index) const
 {
 	if (index >= size)
 	{
@@ -162,8 +156,8 @@ const Base* Container<Base, Factory>::operator[](size_t index) const
 	return data[index];
 }
 
-template<class Base, class Factory>
-Base* Container<Base, Factory>::operator[](size_t index)
+template<class Base>
+Base* Container<Base>::operator[](size_t index)
 {
 	if (index >= size)
 	{
@@ -173,8 +167,8 @@ Base* Container<Base, Factory>::operator[](size_t index)
 	return data[index];
 }
 
-template<class Base, class Factory>
-size_t Container<Base, Factory>::getSize() const
+template<class Base>
+size_t Container<Base>::getSize() const
 {
 	return size;
 }

@@ -8,6 +8,7 @@ private:
 	T first;
 	S second;
 public:
+	Pair() = default;
 	Pair(const T& first, const S& second);
 	Pair(T&& first, S&& second);
 

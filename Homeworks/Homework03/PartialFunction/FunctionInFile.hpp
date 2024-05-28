@@ -35,7 +35,7 @@ public:
 	~FunctionInFile();
 
 	bool contains(int32_t x) const;
-	Pair<bool, int32_t> operator()(int32_t x) const;
+	const Pair<bool, int32_t>& operator()(int32_t x) const;
 };
 
 template<ConstructionRules CR>
@@ -194,7 +194,7 @@ bool FunctionInFile<CR>
 }
 
 template<>
-Pair<bool, int32_t> FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>::operator()(int32_t x) const
+const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>::operator()(int32_t x) const
 {
 	size_t xPairIdx = getPairIndex(x);
 	if (xPairIdx == -1)
@@ -208,7 +208,7 @@ Pair<bool, int32_t> FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>
 }
 
 template<>
-Pair<bool, int32_t> FunctionInFile<ConstructionRules::NotDefinedInGivenNumbers>::operator()(int32_t x) const
+const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::NotDefinedInGivenNumbers>::operator()(int32_t x) const
 {
 	if (contains(x))
 	{
@@ -221,7 +221,7 @@ Pair<bool, int32_t> FunctionInFile<ConstructionRules::NotDefinedInGivenNumbers>:
 }
 
 template<>
-Pair<bool, int32_t> FunctionInFile<ConstructionRules::DefinedForEachNumber>::operator()(int32_t x) const
+const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::DefinedForEachNumber>::operator()(int32_t x) const
 {
 	if (contains(x))
 	{

@@ -24,10 +24,11 @@ private:
 	void moveFrom(FunctionInFile<CR>&& other);
 	void free();
 
-	void loadData(const String& filePath, int16_t N);
+	void loadData(std::ifstream& ifs, int16_t N);
 	size_t getPairIndex(int32_t x) const;
 public:
 	FunctionInFile(const String& filePath, int16_t N); // Might want to implement FilePath class
+	FunctionInFile(std::ifstream& ifs, int16_t N);
 	FunctionInFile(const FunctionInFile<CR>& other);
 	FunctionInFile(FunctionInFile<CR>&& other) noexcept;
 	FunctionInFile<CR>& operator=(const FunctionInFile<CR>& other);
@@ -65,14 +66,8 @@ void FunctionInFile<CR>::free()
 }
 
 template<ConstructionRules CR>
-void FunctionInFile<CR>::loadData(const String& filePath, int16_t N)
+void FunctionInFile<CR>::loadData(std::ifstream& ifs, int16_t N)
 {
-	std::ifstream ifs(filePath.c_str(), std::ios::binary);
-	if (!ifs.is_open())
-	{
-		throw std::logic_error("FunctionInFile::loadData(); Cannot open file!");
-	}
-
 	data = new Pair<int32_t, int32_t>[N];
 	int32_t* row = new int32_t[N];
 	ifs.read((char*)row, sizeof(int32_t) * N);
@@ -91,14 +86,8 @@ void FunctionInFile<CR>::loadData(const String& filePath, int16_t N)
 }
 
 template<>
-void FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>::loadData(const String& filePath, int16_t N)
+void FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>::loadData(std::ifstream& ifs, int16_t N)
 {
-	std::ifstream ifs(filePath.c_str(), std::ios::binary);
-	if (!ifs.is_open())
-	{
-		throw std::logic_error("FunctionInFile::loadData(); Cannot open file!");
-	}
-
 	data = new Pair<int32_t, int32_t>[N];
 	int32_t* row = new int32_t[N];
 	ifs.read((char*)row, sizeof(int32_t) * N);
@@ -134,7 +123,24 @@ size_t FunctionInFile<CR>::getPairIndex(int32_t x) const
 template<ConstructionRules CR>
 FunctionInFile<CR>::FunctionInFile(const String& filePath, int16_t N)
 {
-	loadData(filePath, N);
+	std::ifstream ifs(filePath.c_str(), std::ios::binary);
+	if (!ifs.is_open())
+	{
+		throw std::logic_error("FunctionInFile(); Cannot open file!");
+	}
+
+	loadData(ifs, N);
+}
+
+template<ConstructionRules CR>
+FunctionInFile<CR>::FunctionInFile(std::ifstream& ifs, int16_t N)
+{
+	if (!ifs.is_open())
+	{
+		throw std::logic_error("FunctionInFile(); Cannot open file!");
+	}
+
+	loadData(ifs, N);
 }
 
 template<ConstructionRules CR>
@@ -180,8 +186,7 @@ FunctionInFile<CR>::~FunctionInFile()
 }
 
 template<ConstructionRules CR>
-bool FunctionInFile<CR>
-::contains(int32_t x) const
+bool FunctionInFile<CR>::contains(int32_t x) const
 {
 	for (size_t i = 0; i < size; i++)
 	{

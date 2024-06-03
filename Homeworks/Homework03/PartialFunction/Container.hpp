@@ -25,7 +25,7 @@ public:
 	~Container();
 
 	void add(const Base& elem);
-	void add(const Base* elemPtr); //Factory created element
+	void add(Base* elemPtr); //Factory created element
 
 	const Base* operator[](size_t index) const;
 	Base* operator[](size_t index);
@@ -34,7 +34,7 @@ public:
 };
 
 template<class Base>
-void Container<Base, >::copyFrom(const Container<Base, >& other)
+void Container<Base>::copyFrom(const Container<Base>& other)
 {
 	capacity = other.capacity;
 	size = other.size;
@@ -135,7 +135,7 @@ void Container<Base>::add(const Base& elem)
 }
 
 template<class Base>
-inline void Container<Base>::add(const Base* elemPtr)
+void Container<Base>::add(Base* elemPtr)
 {
 	if (size == capacity)
 	{

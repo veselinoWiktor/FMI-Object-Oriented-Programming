@@ -26,8 +26,10 @@ private:
 
 	void loadData(std::ifstream& ifs, int16_t N);
 	size_t getPairIndex(int32_t x) const;
+
+	void sortPairs();
 public:
-	FunctionInFile(const String& filePath, int16_t N); // Might want to implement FilePath class
+	FunctionInFile(const String& filePath, int16_t N);
 	FunctionInFile(std::ifstream& ifs, int16_t N);
 	FunctionInFile(const FunctionInFile<CR>& other);
 	FunctionInFile(FunctionInFile<CR>&& other) noexcept;
@@ -36,7 +38,7 @@ public:
 	~FunctionInFile();
 
 	bool contains(int32_t x) const;
-	const Pair<bool, int32_t>& operator()(int32_t x) const;
+	Pair<bool, int32_t> operator()(int32_t x) const;
 };
 
 template<ConstructionRules CR>
@@ -83,6 +85,8 @@ void FunctionInFile<CR>::loadData(std::ifstream& ifs, int16_t N)
 
 	size = N;
 	delete[] row;
+	ifs.close();
+	sortPairs();
 }
 
 template<>
@@ -105,19 +109,55 @@ void FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>::loadData(std:
 	delete[] row;
 	size = N;
 	ifs.close();
+	sortPairs();
 }
 
 template<ConstructionRules CR>
-size_t FunctionInFile<CR>::getPairIndex(int32_t x) const
+size_t FunctionInFile<CR>::getPairIndex(int32_t x) const //Uses binary search for the pari index
 {
-	for (size_t i = 0; i < size; i++)
+	size_t left = 0;
+	size_t right = size - 1;
+
+	size_t mid = 0;
+	while (left <= right)
 	{
-		if (data[i].getFirst() == x)
+		mid = (right - left) / 2 + left;
+
+		size_t currPairX = data[mid].getFirst();
+		if (currPairX == x)
 		{
-			return i;
+			return mid;
+		}
+		else if (currPairX > x)
+		{
+			right = mid - 1;
+		}
+		else
+		{
+			left = mid + 1;
 		}
 	}
+
 	return -1;
+}
+
+template<ConstructionRules CR>
+void FunctionInFile<CR>::sortPairs() // uses insertion sort to sort the pairs
+{
+	for (size_t i = 1; i < size; i++)
+	{
+		Pair<int32_t, int32_t> key = data[i];
+		size_t j = i - 1;
+
+		while (j >= 0 && data[j].getFirst() > key.getFirst())
+		{
+			data[j + 1] = data[j];
+			j--;
+		}
+
+		data[j + 1] = key;
+	}
+	
 }
 
 template<ConstructionRules CR>
@@ -199,7 +239,7 @@ bool FunctionInFile<CR>::contains(int32_t x) const
 }
 
 template<>
-const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>::operator()(int32_t x) const
+Pair<bool, int32_t> FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>::operator()(int32_t x) const
 {
 	size_t xPairIdx = getPairIndex(x);
 	if (xPairIdx == -1)
@@ -213,7 +253,7 @@ const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::OnlyDefinedInGivenN
 }
 
 template<>
-const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::NotDefinedInGivenNumbers>::operator()(int32_t x) const
+Pair<bool, int32_t> FunctionInFile<ConstructionRules::NotDefinedInGivenNumbers>::operator()(int32_t x) const
 {
 	if (contains(x))
 	{
@@ -226,7 +266,7 @@ const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::NotDefinedInGivenNu
 }
 
 template<>
-const Pair<bool, int32_t>& FunctionInFile<ConstructionRules::DefinedForEachNumber>::operator()(int32_t x) const
+Pair<bool, int32_t> FunctionInFile<ConstructionRules::DefinedForEachNumber>::operator()(int32_t x) const
 {
 	if (contains(x))
 	{

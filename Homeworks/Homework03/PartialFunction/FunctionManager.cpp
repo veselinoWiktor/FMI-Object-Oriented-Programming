@@ -1,66 +1,85 @@
 #include "FunctionManager.h"
-#include "FunctionInFile.hpp"
-#include "PartialFunctionByCriteria.hpp"
+#include "FunctionFactory.h"
 
-static const char FUNCTION_FILE[] = "second.dat";
+constexpr int64_t CURRENTX_MAX = 2147483648i64;
 
-PartialFunction* FunctionManager::loadFunction(const String& functionFilePath)
+//Currently working by changing the initial function filePath from here
+static const char FUNCTION_FILE[] = "func.dat";
+
+void FunctionManager::printInInterval() const
 {
-	std::ifstream ifs(functionFilePath.c_str(), std::ios::binary);
-	if (!ifs.is_open())
-	{
-		throw std::logic_error("FunctionManager::loadFunction(); Cannot open file!");
-	}
+	int a = 0;
+	int b = 0;
 
-	uint16_t N = 0;
-	ifs.read((char*)&N, sizeof(uint16_t));
-	if (N > 32)
-	{
-		throw std::range_error("FunctionManager::loadFunction(); N was out of range!");
-	}
+	std::cout << "Enter interval start: ";
 
-	uint16_t T = 0;
-	ifs.read((char*)&T, sizeof(uint16_t));
+	std::cin >> a;
+	std::cout << "Enter interval end: ";
+	std::cin >> b;
 
-	switch (T)
+	for (int i = a; i <= b; i++)
 	{
-	case 0:
+		if (partialFunction->isFunctionDefinedIn(i))
+		{
+			std::cout << "f(" << i << ") = " << partialFunction->getFunctionValue(i) << std::endl;
+		}
+	}
+}
+
+void FunctionManager::printPointByPoint() const
+{
+	char continueLoop = '\0';
+	int64_t currentX = INT32_MIN;
+
+	std::cout << "Enter: 1 - To display the first defined point." << std::endl;
+	std::cout << '>';
+	std::cin >> continueLoop;
+
+	while (continueLoop == '1')
 	{
-		FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers> funcInFile(ifs, N);
-		return new PartialFunctionByCriteria<FunctionInFile<ConstructionRules::OnlyDefinedInGivenNumbers>>(funcInFile);
-	}
-	case 1:
-	{	
-		FunctionInFile<ConstructionRules::NotDefinedInGivenNumbers> funcInFile(ifs, N);
-		return new PartialFunctionByCriteria<FunctionInFile<ConstructionRules::NotDefinedInGivenNumbers>>(funcInFile);
-	}
-	case 2:
-	{
-		FunctionInFile<ConstructionRules::DefinedForEachNumber> funcInFile(ifs, N);
-		return new PartialFunctionByCriteria<FunctionInFile<ConstructionRules::DefinedForEachNumber>>(funcInFile);
-	}
-	//case 3: break;
-	//case 4: break;
-	default:
-		throw std::logic_error("FunctionManager::loadFunction(); T was invalid!");
-		break;
-	}
+		for (currentX; currentX <= INT32_MAX; currentX++)
+		{
+			if (partialFunction->isFunctionDefinedIn(currentX))
+			{
+				std::cout << "f(" << currentX << ") = " << partialFunction->getFunctionValue(currentX) << std::endl;
+				currentX++;
+				break;
+			}
+		}
+
+		if (currentX == CURRENTX_MAX)
+		{
+			std::cout << "No more defined points in the function!" << std::endl;
+			break;
+		}
+
+		std::cout << "Enter: 1 - To display the next defined point." << std::endl;
+		std::cout << '>';
+		std::cin >> continueLoop;
+	} 
 }
 
 void FunctionManager::run()
 {
-	partialFunction = loadFunction(FUNCTION_FILE);
-	std::cout << partialFunction->isFunctionDefinedIn(-1) << " " << partialFunction->getFunctionValue(-1) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(0) << " " << partialFunction->getFunctionValue(0) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(1) << " " << partialFunction->getFunctionValue(1) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(2) << " " << partialFunction->getFunctionValue(2) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(3) << " " << partialFunction->getFunctionValue(3) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(4) << " " << partialFunction->getFunctionValue(4) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(5) << " " << partialFunction->getFunctionValue(5) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(6) << " " << partialFunction->getFunctionValue(6) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(7) << " " << partialFunction->getFunctionValue(7) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(8) << " " << partialFunction->getFunctionValue(8) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(9) << " " << partialFunction->getFunctionValue(9) << std::endl;
-	std::cout << partialFunction->isFunctionDefinedIn(10) << " " << partialFunction->getFunctionValue(10) << std::endl;
+	partialFunction = FunctionFactory::create(FUNCTION_FILE);
 
+	std::cout << "Choose function display mode:" << std::endl;
+	std::cout << "Enter: 1 - To display the function in given interval." << std::endl;
+	std::cout << "Enter: 2 - To display the function point by point." << std::endl;
+	std::cout << '>';
+
+	int promptRes = 0;
+	std::cin >> promptRes;
+	switch (promptRes)
+	{
+	case 1:
+		printInInterval();
+		
+		break;
+	case 2:
+		printPointByPoint();
+		break;
+	default:
+		break;
+	}
 }

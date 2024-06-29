@@ -186,7 +186,7 @@ struct Implies : public BinaryOperation
 	}
 };
 
-BooleanExpression* expressionFactory(StringView str)
+static BooleanExpression* expressionFactory(StringView str)
 {
 	str = str.substr(1, str.length() - 2); // remove the first and last brackets
 
@@ -229,13 +229,11 @@ private:
 	{
 		expr = other.expr->clone();
 	}
-	
 	void moveFrom(BooleanExpressionHandler&& other) noexcept
 	{
 		expr = other.expr;
 		other.expr = nullptr;
 	}
-
 	void free()
 	{
 		delete expr;
@@ -254,11 +252,11 @@ private:
 		}
 		return true;
 	}
-
 public:
 	BooleanExpressionHandler(const String& str)
 	{
 		expr = expressionFactory(str);
+		expr->populateVariables(variables);
 	}
 	BooleanExpressionHandler(const BooleanExpressionHandler& other)
 	{
@@ -297,19 +295,12 @@ public:
 	{
 		return expr->eval(bi);
 	}
-
 	bool isTautology() const
 	{
 		return checkAllTruthAssignments(true);
 	}
-
 	bool isContradiction() const
 	{
 		return checkAllTruthAssignments(false);
 	}
 };
-
-int main()
-{
-	std::cout << "Hello World!\n";
-}

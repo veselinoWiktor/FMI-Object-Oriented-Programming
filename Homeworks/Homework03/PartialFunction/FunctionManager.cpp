@@ -59,6 +59,11 @@ void FunctionManager::printPointByPoint() const
 	} 
 }
 
+FunctionManager::~FunctionManager()
+{
+	delete[] partialFunction;
+}
+
 void FunctionManager::run()
 {
 	partialFunction = FunctionFactory::create(FUNCTION_FILE);

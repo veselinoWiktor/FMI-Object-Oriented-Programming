@@ -16,6 +16,7 @@ public:
 	//FunctionManager(const PartialFunction& partialFunction);
 	FunctionManager(const FunctionManager& other) = delete;
 	FunctionManager& operator=(const FunctionManager& other) = delete;
+	~FunctionManager();
 
 	void run();
 };

@@ -13,6 +13,7 @@ private:
 
 public:
 	Function();
+	Function(unsigned int* data, size_t size);
 	Function(const unsigned int* data, size_t size);
 	Function(const Function& other);
 	Function(Function&& other) noexcept;

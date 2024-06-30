@@ -25,6 +25,16 @@ Function::Function() : size(0), data(nullptr)
 {
 }
 
+Function::Function(unsigned int* data, size_t size) : size(size)
+{
+	if (!data)
+	{
+		throw std::invalid_argument("Data was nullptr!");
+	}
+
+	this->data = data;
+}
+
 Function::Function(const unsigned int* data, size_t size) : size(size)
 {
 	this->data = new unsigned int[size];

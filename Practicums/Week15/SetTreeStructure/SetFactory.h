@@ -8,7 +8,9 @@
 
 class SetFactory
 {
-	static Function* createFunction(std::ifstream& ifs, int N);
+	static Set* createSetByCriteria(std::ifstream& ifs, int N);
+	static Set* createUnionOfSets(std::ifstream& ifs, int N);
+	static Set* createIntersectionOfSets(std::ifstream& ifs, int N);
 public:
 	static Set* createSet(const char* filePath);
 };

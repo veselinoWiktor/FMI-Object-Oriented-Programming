@@ -12,12 +12,12 @@ bool IntersectionOfSets::accepts(unsigned int n) const
 {
 	for (size_t i = 0; i < size; i++)
 	{
-		if (data[i]->accepts(n))
+		if (!data[i]->accepts(n))
 		{
-			return true;
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 Set* IntersectionOfSets::clone() const

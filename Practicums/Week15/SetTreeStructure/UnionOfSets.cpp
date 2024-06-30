@@ -12,12 +12,12 @@ bool UnionOfSets::accepts(unsigned int n) const
 {
 	for (size_t i = 0; i < size; i++)
 	{
-		if (!data[i]->accepts(n))
+		if (data[i]->accepts(n))
 		{
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 Set* UnionOfSets::clone() const

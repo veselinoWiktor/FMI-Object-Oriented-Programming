@@ -1,6 +1,6 @@
 #include "Function.h"
 
-void Funciton::copyFrom(const Funciton& other)
+void Function::copyFrom(const Function& other)
 {
 	size = other.size;
 	data = new unsigned int[size];
@@ -8,7 +8,7 @@ void Funciton::copyFrom(const Funciton& other)
 		data[i] = other.data[i];
 }
 
-void Funciton::moveFrom(Funciton&& other)
+void Function::moveFrom(Function&& other)
 {
 	size = other.size;
 
@@ -16,16 +16,16 @@ void Funciton::moveFrom(Funciton&& other)
 	other.data = nullptr;
 }
 
-void Funciton::free()
+void Function::free()
 {
 	delete[] data;
 }
 
-Funciton::Funciton() : size(0), data(nullptr)
+Function::Function() : size(0), data(nullptr)
 {
 }
 
-Funciton::Funciton(const unsigned int* data, size_t size) : size(size)
+Function::Function(const unsigned int* data, size_t size) : size(size)
 {
 	this->data = new unsigned int[size];
 	for (size_t i = 0; i < size; i++)
@@ -34,18 +34,18 @@ Funciton::Funciton(const unsigned int* data, size_t size) : size(size)
 	}
 }
 
-Funciton::Funciton(const Funciton& other)
+Function::Function(const Function& other)
 {
 	copyFrom(other);
 }
 
 
-Funciton::Funciton(Funciton&& other) noexcept
+Function::Function(Function&& other) noexcept
 {
 	moveFrom(std::move(other));
 }
 
-Funciton& Funciton::operator=(const Funciton& other)
+Function& Function::operator=(const Function& other)
 {
 	if (this != &other)
 	{
@@ -57,7 +57,7 @@ Funciton& Funciton::operator=(const Funciton& other)
 }
 
 
-Funciton& Funciton::operator=(Funciton&& other)
+Function& Function::operator=(Function&& other) noexcept
 {
 	if (this != &other)
 	{
@@ -68,12 +68,12 @@ Funciton& Funciton::operator=(Funciton&& other)
 	return *this;
 }
 
-Funciton::~Funciton()
+Function::~Function()
 {
 	free();
 }
 
-bool Funciton::contains(unsigned int x) const
+bool Function::contains(unsigned int x) const
 {
 	for (size_t i = 0; i < size; i++)
 	{
@@ -85,7 +85,7 @@ bool Funciton::contains(unsigned int x) const
 	return false;
 }
 
-bool Funciton::operator()(unsigned int x) const
+bool Function::operator()(unsigned int x) const
 {
 	return contains(x);
 }

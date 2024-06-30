@@ -1,23 +1,24 @@
 #pragma once
+#include <iostream>
 
-class Funciton
+class Function
 {
 private:
 	unsigned int* data;
 	size_t size;
 
-	void copyFrom(const Funciton& other);
-	void moveFrom(Funciton&& other);
+	void copyFrom(const Function& other);
+	void moveFrom(Function&& other);
 	void free();
 
 public:
-	Funciton();
-	Funciton(const unsigned int* data, size_t size);
-	Funciton(const Funciton& other);
-	Funciton(Funciton&& other) noexcept;
-	Funciton& operator=(const Funciton& other);
-	Funciton& operator=(Funciton&& other) noexcept;
-	~Funciton();
+	Function();
+	Function(const unsigned int* data, size_t size);
+	Function(const Function& other);
+	Function(Function&& other) noexcept;
+	Function& operator=(const Function& other);
+	Function& operator=(Function&& other) noexcept;
+	~Function();
 
 	bool contains(unsigned int x) const;
 	bool operator()(unsigned int x) const;

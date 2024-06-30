@@ -52,3 +52,4 @@ HierarchyCache.v1.txt
 *.VC.opendb
 *.VC.db-wal
 *.VC.db-shm
+/Usefull Classes
